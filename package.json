@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/maffiemd/coauthor-ts#readme",
   "devDependencies": {
+    "@types/chrome": "0.0.239",
     "prettier": "^2.8.8",
     "typescript": "^5.1.6"
   }
