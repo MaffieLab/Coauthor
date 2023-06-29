@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/maffiemd/coauthor-ts#readme",
   "devDependencies": {
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.6"
   }
 }
