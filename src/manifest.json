@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "MC_Tracker",
+  "version": "0.0.1",
+
+  "content_scripts": [
+    {
+      "matches": ["https://mc.manuscriptcentral.com/*"],
+      "run_at": "document_end",
+      "js": [
+        "./services/mcServices.js",
+        "./services/storageFunctions.js",
+        "./services/createStatsTable.js",
+        "content.js"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "./services/background.js"
+  },
+  "host_permissions": [
+    "http://localhost:3001/*",
+    "https://mctracker.fly.dev/*"
+  ],
+  "description": "A Google Chrome extenstion for Manuscript Central",
+  "permissions": ["tabs", "storage"]
+}
