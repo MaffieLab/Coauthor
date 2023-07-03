@@ -19,3 +19,12 @@ interface Manuscript {
   days: number;
   journalFullName: string;
 }
+
+/* 
+  Stored in localStorage for caching purposes. We only store the ID 
+  since that's all we need to determine if the database has the
+  associated manuscript or not.
+*/
+interface CachedManuscript {
+  manuscriptID: string;
+}
