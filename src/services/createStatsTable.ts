@@ -1,4 +1,4 @@
-const createStatsTable = (data) => {
+const createStatsTable = (data: JournalStats) => {
   // receives data from the server, creates a table on the website
   // with the jouranl's stats
   let navListList = document.getElementsByClassName("nav nav-list")[0];

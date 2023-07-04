@@ -6,7 +6,8 @@
   "scripts": {
     "style:check": "prettier --check .",
     "style:fix": "prettier --write .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently --raw --kill-others \"tsc -w\" \"tscp -w\""
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,10 @@
   },
   "homepage": "https://github.com/maffiemd/coauthor-ts#readme",
   "devDependencies": {
-    "prettier": "^2.8.8"
+    "@types/chrome": "0.0.239",
+    "concurrently": "^8.2.0",
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.6",
+    "typescript-cp": "^0.1.8"
   }
 }
