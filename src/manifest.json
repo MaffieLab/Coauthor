@@ -11,6 +11,7 @@
         "./services/mcServices.js",
         "./services/storageFunctions.js",
         "./services/createStatsTable.js",
+        "./types/index.js",
         "content.js"
       ]
     }

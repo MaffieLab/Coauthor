@@ -20,6 +20,17 @@ interface Manuscript {
   journalFullName: string;
 }
 
+const newManuscript = (): Manuscript => ({
+  manuscriptID: "",
+  journal: "",
+  submission_date: "",
+  title: "",
+  decision: "",
+  decisioned_date: "",
+  days: 0,
+  journalFullName: "",
+});
+
 /* 
   Stored in localStorage for caching purposes. We only store the ID 
   since that's all we need to determine if the database has the
