@@ -126,9 +126,7 @@ const getDecisionData = () => {
   }
   return ms_data;
 };
-// const isNew = (id, data) => {
-//   return !data.find((item) => item.manuscriptID == id);
-// };
+
 const addReviewTimeColumn = () => {
   /// adds a column to the table for the number of days that a manuscript has been under review
   const authorDashboardRows = (
@@ -219,71 +217,6 @@ const getRevisionTag = (manuscriptID: string): "R1" | "R2" => {
   return manuscriptID.split(".")[1] as "R1" | "R2";
 };
 
-// const getOriginalID = (manuscript) => {
-//   // takes a manuscript ID and splits off the revisions number. Returns original ID.
-//   return manuscript.manuscriptID.split(".")[0];
-// };
-
-// const findMSindex = (manuscriptID, manuscript_data) => {
-//   return (
-//     manuscript_data.findIndex((object) => {
-//       object.manuscriptID == manuscriptID;
-//     }) == -1
-//   );
-// }; // returns true if not in the manuscript_data
-
-// const addRevision = (
-//   manuscript,
-//   manuscript_data,
-//   submission_date,
-//   decision_date,
-//   days
-// ) => {
-//   // get the revision tag
-//   const tag = getRevisionTag(manuscript);
-//   // manuscript not in the array yet, need to find id
-//   const id = getOriginalID(manuscript);
-
-//   // find the other manuscript
-//   const index = findMSindex(id, manuscript_data);
-
-//   manuscript_data[index][tag + "_submission_date"] = decision_date;
-//   manuscript_data[index][tag + "_decisioned_date"] = submission_date;
-//   manuscript_data[index][tag + "_days_till_decision"] = days;
-
-//   return manuscript_data;
-// };
-
-// Preprint server - in the manuscript ID
-// format: (ARCHIVE/YEAR/DOI#).
-// Note: DOI would reveal author ID
-// const isArchived = (manuscriptID) => {
-//   // returns true of the manusript is associted with an archive
-//   return manuscriptID.split("(") > 1;
-// };
-
-// const getArchive = (manuscriptID) => {
-//   // returns the data archive number
-//   return manuscriptID.split("(")[1].split("/")[0]; //this only returns archive
-// };
-
-// const amendData = (ms_data) => {
-//   // load the data object
-//   const data = retrieveData(ms_data);
-
-//   // Get the data on the page
-//   const currentPageData = getDecisionData();
-
-//   // check to see if manuscript is in the object
-//   for (let i = 0; i < currentPageData.length; i++) {}
-
-//   // if it is, break
-
-//   // if it is not, add it to the database
-
-//   // return the complete df
-// };
-
 (async () => {
   console.log("starting");
   if (decisionsPage()) {
@@ -301,8 +234,3 @@ const getRevisionTag = (manuscriptID: string): "R1" | "R2" => {
     addReviewTimeColumn();
   }
 })();
-
-//for scraping table header data
-//let authorDashboardRows = document.getElementById("authorDashboardQueue").rows
-//let tableHeaders = authorDashboardRows[0].cells
-//for(i=0; i<(tableHeaders.length-1); i++) {console.log(tableHeaders[i].textContent)}
