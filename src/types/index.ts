@@ -1,11 +1,11 @@
-interface JournalStats {
+export interface JournalStats {
   "Avg. Days to 1st Decision": number;
   "Standard Deviation": number;
   "Accept % | 1st R&R": number;
   "% Initial Submit => 1st R&R": number;
 }
 
-interface Manuscript {
+export interface Manuscript {
   manuscriptID: string;
   initialSubmission?: boolean;
   R1?: boolean;
@@ -20,7 +20,7 @@ interface Manuscript {
   journalFullName: string;
 }
 
-const newManuscript = (): Manuscript => ({
+export const newManuscript = (): Manuscript => ({
   manuscriptID: "",
   journal: "",
   submission_date: "",
@@ -36,6 +36,6 @@ const newManuscript = (): Manuscript => ({
   since that's all we need to determine if the database has the
   associated manuscript or not.
 */
-interface CachedManuscript {
+export interface CachedManuscript {
   manuscriptID: string;
 }

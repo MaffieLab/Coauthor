@@ -7,17 +7,11 @@
     {
       "matches": ["https://mc.manuscriptcentral.com/*"],
       "run_at": "document_end",
-      "js": [
-        "./services/mcServices.js",
-        "./services/storageFunctions.js",
-        "./services/createStatsTable.js",
-        "./types/index.js",
-        "content.js"
-      ]
+      "js": ["content.js"]
     }
   ],
   "background": {
-    "service_worker": "./services/background.js"
+    "service_worker": "background.js"
   },
   "host_permissions": [
     "http://localhost:3001/*",

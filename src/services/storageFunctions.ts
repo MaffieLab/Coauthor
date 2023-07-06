@@ -1,3 +1,5 @@
+import { Manuscript, CachedManuscript } from "../types/index";
+import { sendData } from "./mcServices";
 const loadLocalStorage = (): CachedManuscript[] => {
   /// loads the localStorage object of ms_data. creates empty list if none
   if (localStorage.getItem("ms_data") == null) {
@@ -63,7 +65,7 @@ const sendToServer = async (newMsList: Manuscript[]) => {
   }
 };
 
-const postData = async (msDataList: Manuscript[], journal: string) => {
+export const postData = async (msDataList: Manuscript[], journal: string) => {
   // posts data to the server
   // updates localStorage with new manuscripts
   let a = loadLocalStorage();
