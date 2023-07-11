@@ -68,11 +68,6 @@ const addDecisionsColumn = (ms_dataObject: Manuscript[]) => {
   }
 };
 
-const daysUntilDecision = () => {
-  const data = getDecisionData();
-  addDecisionsColumn(data);
-};
-
 const getDecisionData = () => {
   /// reads the decision table.
   const authorDashboard = document.getElementById(
