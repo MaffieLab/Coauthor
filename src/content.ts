@@ -3,7 +3,6 @@
 // localStorage for each journal.
 // localStorage only MSID
 //test
-"use strict";
 import { Manuscript, newManuscript } from "./types/index";
 import { createStatsTable } from "./services/createStatsTable";
 import { getStats } from "./services/mcServices";
