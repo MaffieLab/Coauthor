@@ -4,6 +4,10 @@
 // localStorage only MSID
 //test
 "use strict";
+import { Manuscript, newManuscript } from "./types/index";
+import { createStatsTable } from "./services/createStatsTable";
+import { getStats } from "./services/mcServices";
+import { postData } from "./services/storageFunctions";
 const submittedPage = (): boolean => {
   // a function that returns true if the user is on the "Submitted Manuscripts" page.
   // Else false.

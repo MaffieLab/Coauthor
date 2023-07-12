@@ -1,12 +1,10 @@
-const baseURL = "http://localhost:3001";
-///'http://localhost:3001'
-///'https://mctracker.fly.dev'
-
+import env from "../env";
+import { Manuscript } from "../types/index";
 async function getManuscriptData(journal: string, type: string) {
   chrome.runtime.sendMessage(
     {
       contentScriptQuery: "getdata",
-      url: `${baseURL}/api/manuscripts/${journal}/${type}`,
+      url: `${env.API_BASE_URL}/api/manuscripts/${journal}/${type}`,
       journal: journal,
       requestType: type,
     },
@@ -20,12 +18,12 @@ async function getManuscriptData(journal: string, type: string) {
   );
 }
 
-async function sendData(ms: Manuscript) {
+export async function sendData(ms: Manuscript) {
   console.log("posting");
   console.log("manuscript", JSON.parse(JSON.stringify(ms)));
   let response = await chrome.runtime.sendMessage({
     contentScriptQuery: "postData",
-    url: `${baseURL}/api/manuscripts/`,
+    url: `${env.API_BASE_URL}/api/manuscripts/`,
     data: ms,
   });
   return response;
@@ -35,17 +33,17 @@ async function sendMemo(ms: Manuscript) {
   console.log("sending Memo");
   let response = await chrome.runtime.sendMessage({
     contentScriptQuery: "memo",
-    url: `${baseURL}/api/manuscripts/memo/${ms}`,
+    url: `${env.API_BASE_URL}/api/manuscripts/memo/${ms}`,
     data: {},
   });
   return response;
 }
 
-async function getStats(journal: string, type: string) {
+export async function getStats(journal: string, type: string) {
   console.log("starting the get manuscript data script");
   let response = await chrome.runtime.sendMessage({
     contentScriptQuery: "getdata",
-    url: `${baseURL}/api/manuscripts/${journal}/${type}`,
+    url: `${env.API_BASE_URL}/api/manuscripts/${journal}/${type}`,
     journal: journal,
     requestType: type,
   });
