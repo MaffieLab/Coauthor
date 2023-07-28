@@ -7,7 +7,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       fetch(url, {
         method: "GET",
         headers: {
-          type: request.requestType,
           journal: request.journal,
         },
       })

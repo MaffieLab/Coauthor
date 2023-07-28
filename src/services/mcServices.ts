@@ -12,13 +12,12 @@ export async function sendData(ms: Manuscript) {
   return response;
 }
 
-export async function getStats(journal: string, type: string) {
+export async function getStats(journal: string) {
   console.log("starting the get manuscript data script");
   let response = await chrome.runtime.sendMessage({
     contentScriptQuery: "getdata",
-    url: `${env.API_BASE_URL}/api/manuscripts/${journal}/${type}`,
+    url: `${env.API_BASE_URL}/api/journals/${journal}/stats`,
     journal: journal,
-    requestType: type,
   });
   return response;
 }

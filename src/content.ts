@@ -220,7 +220,7 @@ const getRevisionTag = (manuscriptID: string): "R1" | "R2" => {
   if (decisionsPage()) {
     const journal = document.URL.split("/")[3];
     //console.log('in the decision loop')
-    const result = await getStats(journal, "avg");
+    const result = await getStats(journal);
     console.log(`recieved result from getstats ${result}`);
     const a = getDecisionData();
     addDecisionsColumn(a);
