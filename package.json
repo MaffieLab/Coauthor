@@ -6,7 +6,7 @@
   "scripts": {
     "style:check": "prettier --check .",
     "style:fix": "prettier --write .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
