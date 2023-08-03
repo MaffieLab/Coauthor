@@ -40,20 +40,20 @@ const listNotInStorage = (
   return toSave;
 };
 
-export const destructeMsList = (listofms: Manuscript[]): CachedManuscript[] => {
-  // descructures list of manuscripts
-  let a: CachedManuscript[] = [];
-  for (let i = 0; i < listofms.length; i++) {
-    let b = (({ manuscriptID }) => ({ manuscriptID }))(listofms[i]);
-    a.push(b);
-  }
+export const destructureMsList = (
+  listofms: Manuscript[]
+): CachedManuscript[] => {
+  // destructures list of manuscripts
+  const a: CachedManuscript[] = listofms.map((ms) => {
+    return { manuscriptID: ms.manuscriptID };
+  });
   return a;
 };
 
 const updateStored = (listMsToAdd: Manuscript[]) => {
   /// Adds listMsToAdd to those in local storage
   let existing = loadLocalStorage();
-  let destr = destructeMsList(listMsToAdd);
+  let destr = destructureMsList(listMsToAdd);
   let updated = JSON.stringify(existing.concat(destr));
   localStorage.setItem("ms_data", updated);
 };

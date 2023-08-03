@@ -1,4 +1,4 @@
-import { destructeMsList } from "../services/storageFunctions";
+import { destructureMsList } from "../services/storageFunctions";
 import { Manuscript } from "../types/index";
 
 describe("Destructure manuscript function", () => {
@@ -26,7 +26,7 @@ describe("Destructure manuscript function", () => {
   ];
 
   it("destructures list of manuscripts into list of objects containing manuscript IDs", () => {
-    expect(destructeMsList(msList)).toEqual([
+    expect(destructureMsList(msList)).toEqual([
       { manuscriptID: "id1" },
       { manuscriptID: "id2" },
     ]);
