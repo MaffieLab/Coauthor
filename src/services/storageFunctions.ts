@@ -40,7 +40,7 @@ const listNotInStorage = (
   return toSave;
 };
 
-const destructeMsList = (listofms: Manuscript[]): CachedManuscript[] => {
+export const destructeMsList = (listofms: Manuscript[]): CachedManuscript[] => {
   // descructures list of manuscripts
   let a: CachedManuscript[] = [];
   for (let i = 0; i < listofms.length; i++) {
