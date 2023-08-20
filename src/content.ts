@@ -89,11 +89,6 @@ const getDecisionData = () => {
     const manuscriptID =
       authorDashboardRows[i].cells[index.ID].textContent!.trim();
     data["manuscriptID"] = manuscriptID;
-    if (isRevision(manuscriptID)) {
-      data[getRevisionTag(manuscriptID)] = true;
-    } else {
-      data["initialSubmission"] = true;
-    }
     const journal = document.URL.split("/")[3];
     data["journal"] = journal;
     try {
@@ -105,21 +100,14 @@ const getDecisionData = () => {
         authorDashboardRows[i].cells[index.Created].textContent!.trim();
       data["submission_date"] = submission_date;
     }
-    const title = authorDashboardRows[i].cells[index.Title]
-      .textContent!.trim()
-      .split("View")[0]
-      .trim();
-    data["title"] = title;
     const status = authorDashboardRows[i].cells[index.Status];
     const decision = getDecisionType(status);
     data["decision"] = decision!.decision;
-    if (data["decision"] == "Reject" || data["decision"] == "Accept") {
-      data["terminalDecision"] = true;
-    }
     data["decisioned_date"] = decision!.decisionDate;
     const days = daysUnderReview(data.submission_date, data.decisioned_date);
     data["days"] = days;
     data["journalFullName"] = journalFullName;
+    data["year"] = new Date(data["submission_date"]).getFullYear();
     ms_data.push(data);
   }
   return ms_data;
@@ -168,7 +156,7 @@ const find_colName = (
   name: string,
   obj: any
 ) => {
-  // takes a column headersd list and returns name:index
+  // takes a column headers list and returns name:index
   // or "not found"
   for (let i = 0; i < tableHeaders.length; i++) {
     if (tableHeaders[i].textContent!.trim() == name) {
@@ -203,16 +191,6 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
       continue;
     }
   }
-};
-
-const isRevision = (manuscriptID: string): boolean => {
-  // Returns true if manuscript is a revision
-  return manuscriptID.split(".").length > 1;
-};
-
-const getRevisionTag = (manuscriptID: string): "R1" | "R2" => {
-  // returns R# where # is the round of revision
-  return manuscriptID.split(".")[1] as "R1" | "R2";
 };
 
 (async () => {

@@ -7,16 +7,13 @@ export interface JournalStats {
 
 export interface Manuscript {
   manuscriptID: string;
-  initialSubmission?: boolean;
-  R1?: boolean;
-  R2?: boolean;
   journal: string;
   submission_date: string;
   title: string;
   decision: string;
-  terminalDecision?: true;
   decisioned_date: string;
   days: number;
+  year: number;
   journalFullName: string;
 }
 
@@ -28,6 +25,7 @@ export const newManuscript = (): Manuscript => ({
   decision: "",
   decisioned_date: "",
   days: 0,
+  year: 0,
   journalFullName: "",
 });
 

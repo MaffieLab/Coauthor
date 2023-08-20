@@ -11,6 +11,7 @@ describe("Destructure manuscript function", () => {
       decision: "",
       decisioned_date: "",
       days: 0,
+      year: 0,
       journalFullName: "",
     },
     {
@@ -21,6 +22,7 @@ describe("Destructure manuscript function", () => {
       decision: "",
       decisioned_date: "",
       days: 0,
+      year: 0,
       journalFullName: "",
     },
   ];
