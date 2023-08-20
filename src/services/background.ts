@@ -31,19 +31,5 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       .then((response) => sendResponse(response))
       .catch((error) => console.log("Error:", error));
     return true;
-  } else if (request.contentScriptQuery == "memo") {
-    const url = request.url;
-    console.log(`sending the memo! to ${url}`);
-    fetch(url, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => sendResponse(response))
-      .catch((error) => console.log("Error:", error));
-    return true;
   }
 });
