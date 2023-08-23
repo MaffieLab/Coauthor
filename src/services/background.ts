@@ -14,8 +14,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         .then((response) => sendResponse(response))
         .catch();
       return true;
-    } catch {
-      console.dir("Is your server running?");
+    } catch (err) {
+      console.dir(err);
     }
   } else if (request.contentScriptQuery == "postData") {
     const url = request.url;
@@ -27,7 +27,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       },
       body: JSON.stringify(request.data),
     })
-      .then((response) => response.json())
       .then((response) => sendResponse(response))
       .catch((error) => console.log("Error:", error));
     return true;

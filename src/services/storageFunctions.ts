@@ -58,13 +58,6 @@ const updateStored = (listMsToAdd: Manuscript[]) => {
   localStorage.setItem("ms_data", updated);
 };
 
-const sendToServer = async (newMsList: Manuscript[]) => {
-  /// write the manuscripts to server
-  for (let i = 0; i < newMsList.length; i++) {
-    await sendData(newMsList[i]);
-  }
-};
-
 export const postData = async (msDataList: Manuscript[], journal: string) => {
   // posts data to the server
   // updates localStorage with new manuscripts
@@ -72,10 +65,5 @@ export const postData = async (msDataList: Manuscript[], journal: string) => {
   ///console.log(`the following are in storage: ${a}`)
   let b = listNotInStorage(msDataList, a);
   ///console.log(`the following are not in storage: ${b}`)
-  await sendToServer(b);
-  /*if (b.length >0 ) {
-        console.log('sending memo!')
-        await sendMemo(journal)
-    }*/
-  updateStored(b);
+  sendData(b);
 };
