@@ -65,5 +65,6 @@ export const postData = async (msDataList: Manuscript[], journal: string) => {
   ///console.log(`the following are in storage: ${a}`)
   let b = listNotInStorage(msDataList, a);
   ///console.log(`the following are not in storage: ${b}`)
-  sendData(b);
+  await sendData(b);
+  updateStored(b);
 };
