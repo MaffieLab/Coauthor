@@ -1,6 +1,6 @@
 import { Manuscript, CachedManuscript } from "../types/index";
 import { sendData } from "./mcServices";
-const loadLocalStorage = (): CachedManuscript[] => {
+export const loadLocalStorage = (): CachedManuscript[] => {
   /// loads the localStorage object of ms_data. creates empty list if none
   if (localStorage.getItem("ms_data") == null) {
     localStorage.setItem("ms_data", "[]");
@@ -11,7 +11,10 @@ const loadLocalStorage = (): CachedManuscript[] => {
   return data;
 };
 
-const notInStorage = (ms: Manuscript, ms_list: CachedManuscript[]): boolean => {
+export const notInStorage = (
+  ms: Manuscript,
+  ms_list: CachedManuscript[]
+): boolean => {
   // takes a manuscript and manuscript list, returns true if manuscript is in list
   for (let i = 0; i < ms_list.length; i++) {
     if (ms_list[i].manuscriptID == ms.manuscriptID) {

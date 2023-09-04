@@ -6,7 +6,11 @@
 import { Manuscript, newManuscript } from "./types/index";
 import { createStatsTable } from "./services/createStatsTable";
 import { getStats } from "./services/mcServices";
-import { postData } from "./services/storageFunctions";
+import {
+  postData,
+  loadLocalStorage,
+  notInStorage,
+} from "./services/storageFunctions";
 const submittedPage = (): boolean => {
   // a function that returns true if the user is on the "Submitted Manuscripts" page.
   // Else false.
@@ -56,14 +60,49 @@ const createHeader = (cell_fill: string, rowNumber: number) => {
   authorDashboard!.rows[rowNumber].appendChild(header);
 };
 const addDecisionsColumn = (ms_dataObject: Manuscript[]) => {
+  const locallyStored = loadLocalStorage();
   const authorDashboard = document.getElementById(
     "authorDashboardQueue"
   ) as HTMLTableElement;
-  createHeader("Days Until Decision", 0);
+
+  // Create the header for the new column
+  const header = document.createElement("th");
+  header.innerText = "Days Until Decision";
+  authorDashboard.querySelector("tr")?.appendChild(header);
+
   for (let i = 0; i < ms_dataObject.length; i++) {
-    let header = document.createElement("td");
-    header.innerText = `Days: ${ms_dataObject[i].days}`;
-    authorDashboard!.rows[i + 1].appendChild(header);
+    let cell = document.createElement("td");
+
+    // Create a span to contain both the text and image
+    const contentSpan = document.createElement("span");
+    const daysText = `Days: ${ms_dataObject[i].days}`;
+    contentSpan.innerHTML = daysText;
+
+    // Set the white-space property to nowrap to prevent wrapping
+    contentSpan.style.whiteSpace = "nowrap";
+
+    if (notInStorage(ms_dataObject[i], locallyStored)) {
+      // If not in storage, add just the text
+      cell.appendChild(contentSpan);
+    } else {
+      const uploadedText = "Manuscript Uploaded to Coauthor";
+
+      // Set the title attribute for hover text
+      cell.setAttribute("title", uploadedText);
+
+      // Create and append the green checkmark image
+      const check = document.createElement("img");
+      check.src = "https://clipart-library.com/images/6TpoBbxac.png";
+      check.alt = "Green Checkmark";
+      check.style.width = "16px";
+      check.style.height = "16px";
+
+      // Append the content span and the check image to the cell
+      contentSpan.appendChild(check);
+      cell.appendChild(contentSpan);
+    }
+
+    authorDashboard!.rows[i + 1].appendChild(cell);
   }
 };
 
@@ -200,10 +239,10 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
     const result = await getStats(journal);
     console.log(`recieved result from getstats ${result}`);
     const a = getDecisionData();
-    addDecisionsColumn(a);
     createStatsTable(result);
     ///need to retrieve local storage
     await postData(a, journal);
+    addDecisionsColumn(a);
     console.log("finished posting");
   } else if (submittedPage()) {
     addReviewTimeColumn();
