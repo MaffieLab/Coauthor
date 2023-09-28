@@ -102,23 +102,22 @@ const getDecisionData = () => {
     )[0] as HTMLAnchorElement
   ).text;
 
+  const journal = document.URL.split("/")[3];
+
   for (let i = 1; i < authorDashboardRows.length; i++) {
     let data = newManuscript();
-    const manuscriptID =
-      authorDashboardRows[i].cells[index.ID].textContent!.trim();
+    const row: HTMLTableRowElement = authorDashboardRows[i];
+    const manuscriptID = row.cells[index.ID].textContent!.trim();
     data["manuscriptID"] = manuscriptID;
-    const journal = document.URL.split("/")[3];
     data["journal"] = journal;
     try {
-      const submission_date =
-        authorDashboardRows[i].cells[index.Submitted].textContent!.trim();
+      const submission_date = row.cells[index.Submitted].textContent!.trim();
       data["submission_date"] = submission_date;
     } catch (error) {
-      const submission_date =
-        authorDashboardRows[i].cells[index.Created].textContent!.trim();
+      const submission_date = row.cells[index.Created].textContent!.trim();
       data["submission_date"] = submission_date;
     }
-    const status = authorDashboardRows[i].cells[index.Status];
+    const status = row.cells[index.Status];
     const decision = getDecisionType(status);
     data["decision"] = decision!.decision;
     data["decisioned_date"] = decision!.decisionDate;
