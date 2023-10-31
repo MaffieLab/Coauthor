@@ -119,6 +119,9 @@ const getDecisionData = () => {
     }
     const status = row.cells[index.Status];
     const decision = getDecisionType(status);
+    if (!decision) {
+      continue;
+    }
     data["decision"] = decision!.decision;
     data["decisioned_date"] = decision!.decisionDate;
     const days = daysUnderReview(data.submission_date, data.decisioned_date);
