@@ -110,12 +110,11 @@ const getDecisionData = () => {
     const manuscriptID = row.cells[index.ID].textContent!.trim();
     data["manuscriptID"] = manuscriptID;
     data["journal"] = journal;
+    let submission_date: string = "";
     try {
-      const submission_date = row.cells[index.Submitted].textContent!.trim();
-      data["submission_date"] = submission_date;
+      submission_date = row.cells[index.Submitted].textContent!.trim();
     } catch (error) {
-      const submission_date = row.cells[index.Created].textContent!.trim();
-      data["submission_date"] = submission_date;
+      submission_date = row.cells[index.Created].textContent!.trim();
     }
     const status = row.cells[index.Status];
     const decision = getDecisionType(status);
@@ -123,11 +122,10 @@ const getDecisionData = () => {
       continue;
     }
     data["decision"] = decision!.decision;
-    data["decisioned_date"] = decision!.decisionDate;
-    const days = daysUnderReview(data.submission_date, data.decisioned_date);
+    const days = daysUnderReview(submission_date, decision!.decisionDate);
     data["days"] = days;
     data["journalFullName"] = journalFullName;
-    data["year"] = new Date(data["submission_date"]).getFullYear();
+    data["year"] = new Date(submission_date).getFullYear();
     ms_data.push(data);
   }
   return ms_data;

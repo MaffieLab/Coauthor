@@ -6,10 +6,7 @@ describe("Destructure manuscript function", () => {
     {
       manuscriptID: "id1",
       journal: "",
-      submission_date: "",
-      title: "",
       decision: "",
-      decisioned_date: "",
       days: 0,
       year: 0,
       journalFullName: "",
@@ -17,10 +14,7 @@ describe("Destructure manuscript function", () => {
     {
       manuscriptID: "id2",
       journal: "",
-      submission_date: "",
-      title: "",
       decision: "",
-      decisioned_date: "",
       days: 0,
       year: 0,
       journalFullName: "",

@@ -8,10 +8,7 @@ export interface JournalStats {
 export interface Manuscript {
   manuscriptID: string;
   journal: string;
-  submission_date: string;
-  title: string;
   decision: string;
-  decisioned_date: string;
   days: number;
   year: number;
   journalFullName: string;
@@ -20,10 +17,7 @@ export interface Manuscript {
 export const newManuscript = (): Manuscript => ({
   manuscriptID: "",
   journal: "",
-  submission_date: "",
-  title: "",
   decision: "",
-  decisioned_date: "",
   days: 0,
   year: 0,
   journalFullName: "",
