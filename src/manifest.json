@@ -13,16 +13,23 @@
   "background": {
     "service_worker": "background.js"
   },
+  "action": {
+    "default_popup": "./login.html"
+  },
   "web_accessible_resources": [
     {
       "resources": ["*.map"],
       "matches": ["<all_urls>"]
     }
   ],
+  "oauth2": {
+    "client_id": "472233483506-v584va6aocfhvadjjs6fcltuteiutmse.apps.googleusercontent.com",
+    "scopes": [""]
+  },
   "host_permissions": [
     "http://localhost:3001/*",
     "https://mctracker.fly.dev/*"
   ],
   "description": "A Google Chrome extenstion for Manuscript Central",
-  "permissions": ["tabs", "storage"]
+  "permissions": ["tabs", "storage", "identity"]
 }
