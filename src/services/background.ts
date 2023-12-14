@@ -28,6 +28,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(request.data),
     })
       .then((response) => sendResponse(response))
@@ -35,8 +36,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
 });
-
-let user_signed_in = false;
 
 const CLIENT_ID = encodeURIComponent(
   "472233483506-v584va6aocfhvadjjs6fcltuteiutmse.apps.googleusercontent.com"
@@ -59,78 +58,63 @@ function createOauth2URL() {
   return url;
 }
 
-function is_User_Signed_In() {
-  return user_signed_in;
-}
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "login") {
-    if (is_User_Signed_In()) {
-      console.log("user already signed in");
-    } else {
-      chrome.identity.launchWebAuthFlow(
-        {
-          url: createOauth2URL(),
-          interactive: true,
-        },
-        function (redirect_url) {
-          console.log(redirect_url);
-          let id_token = redirect_url!.substring(
-            redirect_url!.indexOf("id_token=") + 9
-          );
-          id_token = id_token.substring(0, id_token.indexOf("&"));
-          const user_info: any = KJUR.jws.JWS.readSafeJSONString(
-            b64utoutf8(id_token.split(".")[1])
-          );
-          console.log(user_info);
-          if (
-            (user_info!.iss === "https://accounts.google.com" ||
-              user_info.iss === "accounts.google.com") &&
-            user_info!.aud === CLIENT_ID
-          ) {
-            user_signed_in = true;
-
-            fetch(`${env.API_BASE_URL}/api/login`, {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${id_token}`,
-              },
-              credentials: "include",
-            })
-              .then((response) => sendResponse(response))
-              .catch((error) => console.log("Error:", error));
-
-            chrome.action.setPopup({ popup: "./logout.html" }, () => {
-              sendResponse({ outcome: "success", token: id_token });
-            });
-          } else {
-            console.log("invalid credentials");
-          }
+    chrome.identity.launchWebAuthFlow(
+      {
+        url: createOauth2URL(),
+        interactive: true,
+      },
+      function (redirect_url) {
+        if (!redirect_url) {
+          // Will be undefined if the user closes the login prompt
+          sendResponse({ outcome: "failure" });
+          return true;
         }
-      );
-      return true;
-    }
-  } else if (request.message === "logout") {
-    chrome.action.setPopup({ popup: "./login.html" }, () => {
-      user_signed_in = false;
-      sendResponse({ outcome: "success" });
-    });
-    return true;
-  } else if (request.message === "isUserSignedIn") {
-    sendResponse(is_User_Signed_In());
-  }
-});
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.contentScriptQuery === "getToken") {
-    chrome.storage.local.get("mcTracker_id", (result) => {
-      const token = result.mcTracker_id;
-      if (token) {
-        sendResponse(token);
-      } else {
-        sendResponse(null);
+        let id_token = redirect_url!.substring(
+          redirect_url!.indexOf("id_token=") + 9
+        );
+        id_token = id_token.substring(0, id_token.indexOf("&"));
+        const user_info: any = KJUR.jws.JWS.readSafeJSONString(
+          b64utoutf8(id_token.split(".")[1])
+        );
+        console.log(user_info);
+        if (
+          (user_info!.iss === "https://accounts.google.com" ||
+            user_info.iss === "accounts.google.com") &&
+          user_info!.aud === CLIENT_ID
+        ) {
+          fetch(`${env.API_BASE_URL}/api/login`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${id_token}`,
+            },
+            credentials: "include",
+          })
+            .then((response) => sendResponse({ outcome: "success" }))
+            .catch((error) => console.log("Error:", error));
+        } else {
+          console.log("invalid credentials");
+        }
       }
-    });
-    return true; // Indicates that the response will be sent asynchronously
+    );
+    return true;
+  } else if (request.message === "logout") {
+    fetch(`${env.API_BASE_URL}/api/logout`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => sendResponse({ outcome: "success" }))
+      .catch((error) => console.log("Error:", error));
+    return true;
+  } else if (request.message === "checkAuthStatus") {
+    fetch(`${env.API_BASE_URL}/api/authstatus`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((response) => sendResponse(response))
+      .catch((error) => console.log("Error:", error));
+    return true;
   }
 });

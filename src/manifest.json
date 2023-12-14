@@ -14,7 +14,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "./login.html"
+    "default_popup": "./ui.html"
   },
   "web_accessible_resources": [
     {
