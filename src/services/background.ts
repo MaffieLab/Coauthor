@@ -42,7 +42,7 @@ const CLIENT_ID = encodeURIComponent(
 );
 const RESPONSE_TYPE = encodeURIComponent("id_token");
 const REDIRECT_URI = encodeURIComponent(
-  "https://hbfekdgnodghabfkjemplgkdjdkhgggj.chromiumapp.org"
+  "https://ckbcendhjkjkcmioflbpibpcklnndkfi.chromiumapp.org"
 );
 
 const STATE = encodeURIComponent("jkls3n");

@@ -31,5 +31,6 @@
     "https://mctracker.fly.dev/*"
   ],
   "description": "A Google Chrome extenstion for Manuscript Central",
-  "permissions": ["tabs", "storage", "identity"]
+  "permissions": ["tabs", "storage", "identity"],
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyjX2Dubb9CTE0l1cry7S8az21ZM+BDDVtkD/0mJAIjj487hu2JykM/zbjqYwRLY/W+BQUJ0ecw6yWGCQ7fMDvsoEqucTR8QmZvZcHt2MMy2ApTgmJYZn/S8l2iXdMqw4u6y34GGDBnYu0+WBTZbn0HDjyWkbKc6Ze7ERDziu5yEUGO6jefnbz94UDRo528bhRRBm4HARsAqbR7e4X6eSrqJj0YdAnQYoLufevlBjoKJR9SFg6VRZVeUUGbJ5O3tNr7UlGf5lXPhBsyxFP97U7TR13wBY6RrJpn5xCz2bDBLCFXQnIyxlv5OowdEIWHNZRwOOodZDht8dXAMi+y+euwIDAQAB"
 }
