@@ -84,7 +84,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             user_info.iss === "accounts.google.com") &&
           user_info!.aud === CLIENT_ID
         ) {
-          fetch(`${env.API_BASE_URL}/api/login`, {
+          fetch(`${env.API_BASE_URL}/api/session`, {
             method: "POST",
             headers: {
               Authorization: `Bearer ${id_token}`,
@@ -100,15 +100,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
     return true;
   } else if (request.message === "logout") {
-    fetch(`${env.API_BASE_URL}/api/logout`, {
-      method: "POST",
+    fetch(`${env.API_BASE_URL}/api/session`, {
+      method: "DELETE",
       credentials: "include",
     })
       .then((response) => sendResponse({ outcome: "success" }))
       .catch((error) => console.log("Error:", error));
     return true;
   } else if (request.message === "checkAuthStatus") {
-    fetch(`${env.API_BASE_URL}/api/authstatus`, {
+    fetch(`${env.API_BASE_URL}/api/session`, {
       method: "GET",
       credentials: "include",
     })

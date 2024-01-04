@@ -34,7 +34,7 @@ chrome.runtime.sendMessage({ message: "checkAuthStatus" }, function (response) {
     document.querySelector("body").appendChild(logButton);
   };
 
-  if (response.isAuthed) {
+  if (response.validSession) {
     renderLogoutPage();
   } else {
     renderLoginPage();
