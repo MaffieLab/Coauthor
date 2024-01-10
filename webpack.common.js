@@ -27,7 +27,10 @@ module.exports = {
   plugins: [
     // Copies manifest.json into /build every build
     new CopyPlugin({
-      patterns: [{ from: "./src/manifest.json", to: "./manifest.json" }],
+      patterns: [
+        { from: "./src/manifest.json", to: "./manifest.json" },
+        { from: "./src/ui" },
+      ],
     }),
   ],
   resolve: {
