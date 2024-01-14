@@ -1,12 +1,7 @@
 // Notes: Title sometimes has "Files Archived" on decisions page.
-// localstorage is using one file. Could divide it among journals to have a
-// localStorage for each journal.
-// localStorage only MSID
-//test
 import { Manuscript, newManuscript } from "./types/index";
 import { createStatsTable } from "./services/createStatsTable";
-import { getStats } from "./services/mcServices";
-import { postData } from "./services/storageFunctions";
+import { getStats, sendData } from "./services/mcServices";
 import env from "./env";
 import * as Sentry from "@sentry/browser";
 
@@ -228,7 +223,7 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
     addDecisionsColumn(a);
     createStatsTable(result);
     ///need to retrieve local storage
-    await postData(a, journal);
+    await sendData(a);
     console.log("finished posting");
   } else if (submittedPage()) {
     addReviewTimeColumn();

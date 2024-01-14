@@ -22,12 +22,3 @@ export const newManuscript = (): Manuscript => ({
   year: 0,
   journalFullName: "",
 });
-
-/* 
-  Stored in localStorage for caching purposes. We only store the ID 
-  since that's all we need to determine if the database has the
-  associated manuscript or not.
-*/
-export interface CachedManuscript {
-  manuscriptID: string;
-}
