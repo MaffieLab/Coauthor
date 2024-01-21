@@ -222,9 +222,14 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
     const a = getDecisionData();
     addDecisionsColumn(a);
     createStatsTable(result);
-    ///need to retrieve local storage
-    await sendData(a);
-    console.log("finished posting");
+    chrome.runtime.sendMessage(
+      { message: "checkAuthStatus" },
+      async function (response) {
+        if (response.validSession) {
+          await sendData(a);
+        }
+      }
+    );
   } else if (submittedPage()) {
     addReviewTimeColumn();
   }
