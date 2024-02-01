@@ -323,6 +323,22 @@ const manuscriptUploadStatusColumn: {
         }
       }
     );
+    chrome.runtime.onMessage.addListener(async function (
+      message,
+      sender,
+      sendResponse
+    ) {
+      switch (message.type) {
+        case "addAuthenticatedFeatures":
+          manuscriptUploadStatusColumn.mount(manuscriptData);
+          sendResponse("success");
+          break;
+        case "removeAuthenticatedFeatures":
+          manuscriptUploadStatusColumn.unmount();
+          sendResponse("success");
+          break;
+      }
+    });
   } else if (submittedPage()) {
     addReviewTimeColumn();
   }

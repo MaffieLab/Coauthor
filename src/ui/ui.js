@@ -9,6 +9,18 @@ chrome.runtime.sendMessage({ message: "checkAuthStatus" }, function (response) {
       chrome.runtime.sendMessage({ message: "login" }, (response) => {
         if (response.outcome === "success") {
           renderLogoutPage();
+          chrome.tabs.query(
+            { active: true, currentWindow: true },
+            function (tabs) {
+              chrome.tabs.sendMessage(
+                tabs[0].id,
+                { type: "addAuthenticatedFeatures" },
+                function (response) {
+                  console.log(response);
+                }
+              );
+            }
+          );
         }
       });
     });
@@ -26,6 +38,18 @@ chrome.runtime.sendMessage({ message: "checkAuthStatus" }, function (response) {
       chrome.runtime.sendMessage({ message: "logout" }, (response) => {
         if (response.outcome === "success") {
           renderLoginPage();
+          chrome.tabs.query(
+            { active: true, currentWindow: true },
+            function (tabs) {
+              chrome.tabs.sendMessage(
+                tabs[0].id,
+                { type: "removeAuthenticatedFeatures" },
+                function (response) {
+                  console.log(response);
+                }
+              );
+            }
+          );
           // saveDataToLocal(response.token);
         }
       });
