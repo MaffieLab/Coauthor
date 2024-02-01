@@ -212,6 +212,99 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
   }
 };
 
+const manuscriptUploadStatusColumn: {
+  manuscriptTableRows: HTMLCollectionOf<HTMLTableRowElement>;
+  columnHeader: HTMLTableCellElement;
+  columnCells: HTMLTableCellElement[];
+  mount(manuscriptData: Manuscript[]): void;
+  render(uploadSuccessful: boolean): void;
+  unmount(): void;
+} = {
+  columnHeader: (() => {
+    const header = document.createElement("th");
+    header.textContent = "Uploaded to Coauthor?";
+    return header;
+  })(),
+
+  manuscriptTableRows: (() => {
+    const manuscriptTable = document.getElementById(
+      "authorDashboardQueue"
+    ) as HTMLTableElement;
+    const manuscriptRows = manuscriptTable.tBodies![0].rows;
+    return manuscriptRows;
+  })(),
+
+  columnCells: (() => {
+    const manuscriptTable = document.getElementById(
+      "authorDashboardQueue"
+    ) as HTMLTableElement;
+    const manuscriptRows = manuscriptTable.tBodies![0].rows;
+    const cells: HTMLTableCellElement[] = [];
+    for (const row of manuscriptRows) {
+      const cell = document.createElement("td");
+      const imageElement = document.createElement("img");
+      imageElement.style.width = "25px";
+      imageElement.style.height = "25px";
+      cell.appendChild(imageElement);
+      cells.push(cell);
+    }
+    return cells;
+  })(),
+
+  async mount(manuscriptData: Manuscript[]) {
+    const manuscriptTable = document.getElementById(
+      "authorDashboardQueue"
+    ) as HTMLTableElement;
+
+    const tableHeaders = manuscriptTable.tHead!.rows[0];
+    tableHeaders.appendChild(this.columnHeader);
+
+    for (let i = 0; i < this.manuscriptTableRows.length; i++) {
+      const imageElement = this.columnCells[i].children[0] as HTMLImageElement;
+      imageElement.src = chrome.runtime.getURL("assets/loading.gif");
+      imageElement.alt = "Loading icon indicating upload pending";
+      imageElement.title = "Manuscript upload is pending.";
+      this.manuscriptTableRows[i].appendChild(this.columnCells[i]);
+    }
+
+    const uploadSuccessful = await sendData(manuscriptData);
+    this.render(uploadSuccessful);
+  },
+
+  render(uploadSuccessful) {
+    if (uploadSuccessful) {
+      for (let i = 0; i < this.manuscriptTableRows.length; i++) {
+        const imageElement = this.columnCells[i]
+          .children[0] as HTMLImageElement;
+        imageElement.src = chrome.runtime.getURL("assets/greenCheck.png");
+        imageElement.alt = "Green checkmark indicating upload success";
+        imageElement.title =
+          "Manuscript successfully received by Coauthor servers.";
+        this.manuscriptTableRows[i].appendChild(this.columnCells[i]);
+      }
+    } else {
+      for (let i = 0; i < this.manuscriptTableRows.length; i++) {
+        const imageElement = this.columnCells[i]
+          .children[0] as HTMLImageElement;
+        imageElement.src = chrome.runtime.getURL(
+          "assets/disconnect-plug-icon.png"
+        );
+        imageElement.alt = "Disconnected plug indicating failed upload attempt";
+        imageElement.title =
+          "Connection could not be established with Coauthor servers.";
+        this.manuscriptTableRows[i].appendChild(this.columnCells[i]);
+      }
+    }
+  },
+
+  unmount() {
+    this.columnHeader.remove();
+    for (const cell of this.columnCells) {
+      cell.remove();
+    }
+  },
+};
+
 (async () => {
   console.log("starting");
   if (decisionsPage()) {
@@ -219,14 +312,14 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
     //console.log('in the decision loop')
     const result = await getStats(journal);
     console.log(`recieved result from getstats ${result}`);
-    const a = getDecisionData();
-    addDecisionsColumn(a);
+    const manuscriptData = getDecisionData();
+    addDecisionsColumn(manuscriptData);
     createStatsTable(result);
     chrome.runtime.sendMessage(
       { message: "checkAuthStatus" },
       async function (response) {
         if (response.validSession) {
-          await sendData(a);
+          manuscriptUploadStatusColumn.mount(manuscriptData);
         }
       }
     );
