@@ -215,8 +215,6 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
 const manuscriptUploadStatusColumn: {
   columnHeader: HTMLTableCellElement | null;
   columnCells: HTMLTableCellElement[];
-  manuscriptTableRows: HTMLCollectionOf<HTMLTableRowElement> | null;
-  manuscriptData: Manuscript[];
   uploadStatus: "PENDING" | "SUCCESS" | "FAILURE";
   mount(manuscriptData: Manuscript[]): void;
   render(): void;
@@ -224,20 +222,16 @@ const manuscriptUploadStatusColumn: {
 } = {
   columnHeader: null,
   columnCells: [],
-  manuscriptTableRows: null,
-  manuscriptData: [],
   uploadStatus: "PENDING",
 
   async mount(manuscriptData) {
-    this.manuscriptData = manuscriptData;
-
     const manuscriptTable = document.getElementById(
       "authorDashboardQueue"
     ) as HTMLTableElement;
 
-    this.manuscriptTableRows = manuscriptTable.tBodies![0].rows;
+    const manuscriptTableRows = manuscriptTable.tBodies![0].rows;
 
-    for (const row of this.manuscriptTableRows) {
+    for (const row of manuscriptTableRows) {
       const cell = document.createElement("td");
       const imageElement = document.createElement("img");
       imageElement.style.width = "25px";
@@ -249,12 +243,11 @@ const manuscriptUploadStatusColumn: {
 
     const header = document.createElement("th");
     header.textContent = "Uploaded to Coauthor?";
-    this.columnHeader = header;
     const tableHeaders = manuscriptTable.tHead!.rows[0];
-    tableHeaders.appendChild(this.columnHeader!);
+    tableHeaders.appendChild(header);
 
     this.render();
-    const uploadSuccessful = await sendData(this.manuscriptData);
+    const uploadSuccessful = await sendData(manuscriptData);
     this.uploadStatus = uploadSuccessful ? "SUCCESS" : "FAILURE";
     this.render();
   },
