@@ -245,6 +245,7 @@ const manuscriptUploadStatusColumn: {
     header.textContent = "Uploaded to Coauthor?";
     const tableHeaders = manuscriptTable.tHead!.rows[0];
     tableHeaders.appendChild(header);
+    this.columnHeader = header;
 
     this.render();
     const uploadSuccessful = await sendData(manuscriptData);
