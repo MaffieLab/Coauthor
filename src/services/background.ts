@@ -31,8 +31,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       credentials: "include",
       body: JSON.stringify(request.data),
     })
-      .then((response) => sendResponse(response))
-      .catch((error) => console.log("Error:", error));
+      .then((response) => sendResponse(true))
+      .catch((error) => {
+        console.error(error);
+        sendResponse(false);
+      });
     return true;
   }
 });

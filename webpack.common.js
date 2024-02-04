@@ -30,6 +30,7 @@ module.exports = {
       patterns: [
         { from: "./src/manifest.json", to: "./manifest.json" },
         { from: "./src/ui" },
+        { from: "./src/assets", to: "./assets" },
       ],
     }),
   ],
