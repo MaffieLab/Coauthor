@@ -1,7 +1,7 @@
 // Notes: Title sometimes has "Files Archived" on decisions page.
 import { Manuscript, newManuscript } from "./types/index";
-import { createStatsTable } from "./services/createStatsTable";
-import { getStats, sendData } from "./services/mcServices";
+import { sendData } from "./services/mcServices";
+import { renderDashboard } from "./services/dashboard";
 import env from "./env";
 import * as Sentry from "@sentry/browser";
 
@@ -212,11 +212,11 @@ const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
   }
 };
 
-const manuscriptUploadStatusColumn: {
+export const manuscriptUploadStatusColumn: {
   columnHeader: HTMLTableCellElement | null;
   columnCells: HTMLTableCellElement[];
   uploadStatus: "PENDING" | "SUCCESS" | "FAILURE";
-  mount(manuscriptData: Manuscript[]): void;
+  mount(): void;
   render(): void;
   unmount(): void;
 } = {
@@ -224,7 +224,7 @@ const manuscriptUploadStatusColumn: {
   columnCells: [],
   uploadStatus: "PENDING",
 
-  async mount(manuscriptData) {
+  async mount() {
     const manuscriptTable = document.getElementById(
       "authorDashboardQueue"
     ) as HTMLTableElement;
@@ -248,7 +248,7 @@ const manuscriptUploadStatusColumn: {
     this.columnHeader = header;
 
     this.render();
-    const uploadSuccessful = await sendData(manuscriptData);
+    const uploadSuccessful = await sendData(globalStore.manuscriptData);
     this.uploadStatus = uploadSuccessful ? "SUCCESS" : "FAILURE";
     this.render();
   },
@@ -296,21 +296,25 @@ const manuscriptUploadStatusColumn: {
   },
 };
 
+const globalStore: {
+  manuscriptData: Manuscript[];
+} = {
+  manuscriptData: [],
+};
+
 (async () => {
   console.log("starting");
   if (decisionsPage()) {
-    const journal = document.URL.split("/")[3];
     //console.log('in the decision loop')
-    const result = await getStats(journal);
-    console.log(`recieved result from getstats ${result}`);
     const manuscriptData = getDecisionData();
+    globalStore.manuscriptData = manuscriptData;
     addDecisionsColumn(manuscriptData);
-    createStatsTable(result);
+    renderDashboard();
     chrome.runtime.sendMessage(
       { message: "checkAuthStatus" },
       async function (response) {
         if (response.validSession) {
-          manuscriptUploadStatusColumn.mount(manuscriptData);
+          manuscriptUploadStatusColumn.mount();
         }
       }
     );
