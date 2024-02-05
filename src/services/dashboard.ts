@@ -10,7 +10,7 @@ export const renderDashboard = async () => {
   dashboard.style.padding = "0px";
   dashboardContainer?.append(dashboard);
 
-  const header = document.createElement("li");
+  const header = document.createElement("header");
   header.className = "nav-header";
   header.innerText = "Coauthor Dashboard";
   header.style.margin = "0";
