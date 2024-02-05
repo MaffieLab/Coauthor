@@ -10,9 +10,10 @@ export const renderDashboard = async () => {
   dashboard.style.padding = "0px";
   dashboardContainer?.append(dashboard);
 
-  const header = document.createElement("h1");
+  const header = document.createElement("li");
   header.className = "nav-header";
   header.innerText = "Coauthor Dashboard";
+  header.style.margin = "0";
   dashboard!.appendChild(header);
   renderLoginInterface();
   renderStatsTable();
@@ -112,6 +113,7 @@ const renderStatsTable = async () => {
   statsTable.style.padding = "0px";
   const statsHeader = document.createElement("header");
   statsHeader.textContent = "Journal Statistics";
+  statsHeader.style.margin = "0px";
   statsHeader.className = "nav-header";
 
   statsTable.appendChild(statsHeader);
