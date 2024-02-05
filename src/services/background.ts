@@ -69,8 +69,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         interactive: true,
       },
       function (redirect_url) {
-        if (!redirect_url) {
-          // Will be undefined if the user closes the login prompt
+        if (
+          !redirect_url ||
+          redirect_url.indexOf("error=access_denied") !== -1
+        ) {
           sendResponse({ outcome: "failure" });
           return true;
         }
@@ -81,7 +83,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const user_info: any = KJUR.jws.JWS.readSafeJSONString(
           b64utoutf8(id_token.split(".")[1])
         );
-        console.log(user_info);
         if (
           (user_info!.iss === "https://accounts.google.com" ||
             user_info.iss === "accounts.google.com") &&

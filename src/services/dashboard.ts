@@ -56,16 +56,21 @@ const renderLoginInterface = () => {
   loginSection.appendChild(logButton);
   dashboard?.appendChild(loginSection);
 
+  let popupActive = false; // only one auth window open at a time
   const handleLogin = () => {
-    chrome.runtime.sendMessage({ message: "login" }, (response) => {
-      if (response.outcome === "success") {
-        loginStatusText.textContent = "You are logged in.";
-        logButton.textContent = "Logout";
-        logButton.removeEventListener("click", handleLogin);
-        logButton.addEventListener("click", handleLogout);
-        manuscriptUploadStatusColumn.mount();
-      }
-    });
+    if (!popupActive) {
+      popupActive = true;
+      chrome.runtime.sendMessage({ message: "login" }, (response) => {
+        if (response.outcome === "success") {
+          loginStatusText.textContent = "You are logged in.";
+          logButton.textContent = "Logout";
+          logButton.removeEventListener("click", handleLogin);
+          logButton.addEventListener("click", handleLogout);
+          manuscriptUploadStatusColumn.mount();
+        }
+        popupActive = false;
+      });
+    }
   };
 
   const handleLogout = () => {
