@@ -41,11 +41,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 const CLIENT_ID = encodeURIComponent(
-  "472233483506-v584va6aocfhvadjjs6fcltuteiutmse.apps.googleusercontent.com"
+  "336259157417-v5g604nnvm0cl0jplbpilbie3sbsiebr.apps.googleusercontent.com"
 );
 const RESPONSE_TYPE = encodeURIComponent("id_token");
 const REDIRECT_URI = encodeURIComponent(
-  "https://ckbcendhjkjkcmioflbpibpcklnndkfi.chromiumapp.org"
+  "https://efahphfbnobmnodimconjomnmiolphga.chromiumapp.org"
 );
 
 const STATE = encodeURIComponent("jkls3n");
