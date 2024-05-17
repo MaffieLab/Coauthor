@@ -9,8 +9,8 @@ export interface Manuscript {
   manuscriptID: string;
   journal: string;
   decision: string;
-  days: number;
-  year: number;
+  submissionDate: string;
+  decisionDate: string;
   journalFullName: string;
 }
 
@@ -18,7 +18,7 @@ export const newManuscript = (): Manuscript => ({
   manuscriptID: "",
   journal: "",
   decision: "",
-  days: 0,
-  year: 0,
+  submissionDate: "",
+  decisionDate: "",
   journalFullName: "",
 });
