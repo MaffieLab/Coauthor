@@ -81,7 +81,10 @@ const addDecisionsColumn = (ms_dataObject: Manuscript[]) => {
   createHeader("Days Until Decision", 0);
   for (let i = 0; i < ms_dataObject.length; i++) {
     let header = document.createElement("td");
-    header.innerText = `Days: ${ms_dataObject[i].days}`;
+    header.innerText = `Days: ${daysUnderReview(
+      ms_dataObject[i].submissionDate,
+      ms_dataObject[i].decisionDate
+    )}`;
     authorDashboard!.rows[i + 1].appendChild(header);
   }
 };
@@ -123,10 +126,9 @@ const getDecisionData = () => {
       continue;
     }
     data["decision"] = decision!.decision;
-    const days = daysUnderReview(submission_date, decision!.decisionDate);
-    data["days"] = days;
+    data["submissionDate"] = submission_date;
+    data["decisionDate"] = decision.decisionDate;
     data["journalFullName"] = journalFullName;
-    data["year"] = new Date(submission_date).getFullYear();
     ms_data.push(data);
   }
   return ms_data;
