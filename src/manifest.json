@@ -23,7 +23,7 @@
     }
   ],
   "oauth2": {
-    "client_id": "336259157417-v5g604nnvm0cl0jplbpilbie3sbsiebr.apps.googleusercontent.com",
+    "client_id": "386855698885-huf3aglc5f7s4cni7fmll16ki66ho155.apps.googleusercontent.com",
     "scopes": [""]
   },
   "host_permissions": [
@@ -32,5 +32,5 @@
   ],
   "description": "A Google Chrome extenstion for Manuscript Central",
   "permissions": ["tabs", "storage", "identity"],
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgi7C0c3n0m0+rQgxSuzMABK32E4dpD0v1G4YLQKzjFvaqxwdSNLWz7/WRVoCE0VxAhnqjGAj8MSgTyuh9GhnCsAFlC/Hj6rBXzBXgIj4gVkyJi7JpmLAH5b7/K4PjQBwR1OSv9SnavUHla2kroEOIWb8sXWDAg6Oo344SCbNMjMe9QMAvZL1WQU0A69pPPkP7fbWVNgRhwuhpUI2e0BsBkkOkz+XQH9VYbLsXISeDTEH+Z37QSyv/lbXM8/ydZCk7hmiJsbImlQp20Bsp/RXGvia4nyMx0s798P3ZKlOa2PqmfVp/q/meMbY4bIzje4JT1lESKGl1J2ypSHvDZ1UJwIDAQAB"
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5EaziQp8N+0QkocGKkfq/AK6AgFpeGtJ+lblHfx3dqFpauY1z3himuj3y7j+jLLsQJdgOvDpzkleD5uB0uzN77tCixdt/7k509nKp/E9XCnFeFRPGC2GTnPndFqesjzvRHdxTlX3dHDTTkvHt1mpo/TXwVkkXtJvcG/ZCZTQFcw2/M7TeYr9iXbM0gcZc8OdwcPehDb+x6p1Spu6SyCiiYCfktMI8tKjSbp+bH/JRa+2iublrazzTkCx+bDvBM9N8AlmYaMVsgiqoaBWheb2bKkBVU91Q78QOMcwAXt1qpqFDcv0rtvsbDS6qcnwJTH/vxwOI6Zkr6kvEa2rt4+gBwIDAQAB"
 }
