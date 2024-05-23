@@ -135,7 +135,8 @@ const renderStatsTable = async () => {
     new_node.style.color = "#0083bf";
     new_node.style.padding = "1px 10px";
     new_node.className = "nav-submenu";
-    new_node.innerText = `${headers[i]}: ${Object.values(journalStats)[i]}`;
+    const value = Object.values(journalStats)[i];
+    new_node.innerText = `${headers[i]}: ${value === null ? "No Data" : value}`;
     statsList.appendChild(new_node);
   }
   statsTable!.appendChild(statsList);
