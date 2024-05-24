@@ -1,5 +1,4 @@
 const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   /* 
@@ -24,16 +23,6 @@ module.exports = {
     poll: true, // Check for changes every second
     ignored: /node_modules/,
   },
-  plugins: [
-    // Copies manifest.json into /build every build
-    new CopyPlugin({
-      patterns: [
-        { from: "./src/manifest.json", to: "./manifest.json" },
-        { from: "./src/ui" },
-        { from: "./src/assets", to: "./assets" },
-      ],
-    }),
-  ],
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
