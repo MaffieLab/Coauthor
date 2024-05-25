@@ -2,7 +2,9 @@
   "manifest_version": 3,
   "name": "MC_Tracker",
   "version": "0.0.1",
-
+  "icons": {
+    "128": "assets/icon128.png"
+  },
   "content_scripts": [
     {
       "matches": ["https://mc.manuscriptcentral.com/*"],
