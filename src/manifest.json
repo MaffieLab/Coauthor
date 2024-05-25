@@ -28,7 +28,7 @@
     "http://localhost:3001/*",
     "https://mctracker.fly.dev/*"
   ],
-  "description": "A Google Chrome extenstion for Manuscript Central",
+  "description": "Share your manuscript submission experiences and help increase transparency in academic publishing!",
   "permissions": ["identity"],
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5EaziQp8N+0QkocGKkfq/AK6AgFpeGtJ+lblHfx3dqFpauY1z3himuj3y7j+jLLsQJdgOvDpzkleD5uB0uzN77tCixdt/7k509nKp/E9XCnFeFRPGC2GTnPndFqesjzvRHdxTlX3dHDTTkvHt1mpo/TXwVkkXtJvcG/ZCZTQFcw2/M7TeYr9iXbM0gcZc8OdwcPehDb+x6p1Spu6SyCiiYCfktMI8tKjSbp+bH/JRa+2iublrazzTkCx+bDvBM9N8AlmYaMVsgiqoaBWheb2bKkBVU91Q78QOMcwAXt1qpqFDcv0rtvsbDS6qcnwJTH/vxwOI6Zkr6kvEa2rt4+gBwIDAQAB"
 }
