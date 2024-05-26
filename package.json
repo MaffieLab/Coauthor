@@ -1,6 +1,6 @@
 {
-  "name": "mc-tracker",
-  "version": "1.0.0",
+  "name": "coauthor",
+  "version": "v0.4.0-beta",
   "description": "",
   "main": "index.js",
   "scripts": {
