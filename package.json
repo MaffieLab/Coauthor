@@ -37,6 +37,6 @@
   "dependencies": {
     "@sentry/browser": "^7.69.0",
     "@sentry/webpack-plugin": "^2.7.1",
-    "jsrsasign": "^10.8.6"
+    "jsrsasign": "^11.0.0"
   }
 }
