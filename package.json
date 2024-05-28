@@ -35,7 +35,8 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
-    "@sentry/browser": "^7.69.0",
+    "@sentry/browser": "^7.116.0",
+    "@sentry/types": "^8.5.0",
     "@sentry/webpack-plugin": "^2.7.1",
     "jsrsasign": "^11.0.0"
   }
