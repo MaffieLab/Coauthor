@@ -7,7 +7,8 @@
     "style:check": "prettier --check .",
     "style:fix": "prettier --write .",
     "test": "jest",
-    "dev": "webpack --watch --config webpack.dev.js",
+    "dev": "cross-env UPLOAD_SOURCEMAPS=false webpack --watch --config webpack.dev.js",
+    "dev:sourcemaps": "cross-env UPLOAD_SOURCEMAPS=true webpack --watch --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
   "repository": {
@@ -25,6 +26,7 @@
     "@types/jest": "^29.5.3",
     "@types/jsrsasign": "^10.5.12",
     "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
     "jest": "^29.6.2",
     "prettier": "^2.8.8",
     "ts-jest": "^29.1.1",

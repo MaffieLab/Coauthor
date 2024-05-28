@@ -5,9 +5,10 @@ import { renderDashboard } from "./services/dashboard";
 import env from "./env";
 import * as Sentry from "@sentry/browser";
 
-if (env.SENTRY_DSN) {
+if (env.SENTRY_ENV) {
   Sentry.init({
-    dsn: env.SENTRY_DSN,
+    dsn: env.SENTRY_DSN!,
+    environment: env.SENTRY_ENV!,
     // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
     tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
     integrations: [
@@ -54,7 +55,6 @@ const daysUnderReview = (submitted: string, returned: string): number => {
     (new Date(returned).getTime() - new Date(submitted).getTime()) / sec
   );
 };
-
 const createHeader = (cell_fill: string, rowNumber: number) => {
   // Creates the header column
   const header = document.createElement("td");
