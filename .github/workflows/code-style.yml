@@ -1,0 +1,16 @@
+name: check code style
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  check-code-style:
+    name: check-code-style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: check code style
+        run: npm run style:check
