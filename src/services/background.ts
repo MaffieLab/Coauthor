@@ -1,5 +1,24 @@
 import { KJUR, b64utoutf8 } from "jsrsasign";
 import env from "../env";
+import * as Sentry from "@sentry/browser";
+
+try {
+  if (env.SENTRY_ENV) {
+    Sentry.init({
+      dsn: env.SENTRY_DSN!,
+      environment: env.SENTRY_ENV!,
+      // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+      tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+      // Performance Monitoring
+      tracesSampleRate: 1.0, // Capture 100% of the transactions, reduce in production!
+      // Session Replay
+      replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+      replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+    });
+  }
+} catch (e) {
+  console.error(e);
+}
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // handles getData for showing stats on the author page,
@@ -15,7 +34,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       })
         .then((response) => response.json())
         .then((response) => sendResponse(response))
-        .catch();
+        .catch((err) => {
+          Sentry.captureException(err);
+        });
       return true;
     } catch (err) {
       console.dir(err);
@@ -34,6 +55,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       .then((response) => sendResponse(true))
       .catch((error) => {
         console.error(error);
+        Sentry.captureException(error);
         sendResponse(false);
       });
     return true;
@@ -96,7 +118,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             credentials: "include",
           })
             .then((response) => sendResponse({ outcome: "success" }))
-            .catch((error) => console.log("Error:", error));
+            .catch((error) => {
+              Sentry.captureException(error);
+              console.log("Error:", error);
+            });
         } else {
           console.log("invalid credentials");
         }
@@ -109,7 +134,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       credentials: "include",
     })
       .then((response) => sendResponse({ outcome: "success" }))
-      .catch((error) => console.log("Error:", error));
+      .catch((error) => {
+        Sentry.captureException(error);
+        console.log("Error:", error);
+      });
     return true;
   } else if (request.message === "checkAuthStatus") {
     fetch(`${env.API_BASE_URL}/api/session`, {
@@ -118,7 +146,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
       .then((response) => response.json())
       .then((response) => sendResponse(response))
-      .catch((error) => console.log("Error:", error));
+      .catch((error) => {
+        Sentry.captureException(error);
+        console.log("Error:", error);
+      });
     return true;
   }
 });
