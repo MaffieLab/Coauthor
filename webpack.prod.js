@@ -9,7 +9,7 @@ function modify(buffer) {
   var manifest = JSON.parse(buffer.toString());
 
   // Remove any host permissions not required in production
-  manifest.host_permissions = ["https://mctracker.fly.dev/*"];
+  manifest.host_permissions = [`${process.env.API_BASE_URL}/*`];
 
   // pretty print to JSON with two spaces
   manifest_JSON = JSON.stringify(manifest, null, 2);

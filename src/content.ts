@@ -2,13 +2,12 @@
 import { Manuscript, newManuscript } from "./types/index";
 import { sendData } from "./services/mcServices";
 import { renderDashboard } from "./services/dashboard";
-import env from "./env";
 import * as Sentry from "@sentry/browser";
 
-if (env.SENTRY_ENV) {
+if (process.env.SENTRY_ENV) {
   Sentry.init({
-    dsn: env.SENTRY_DSN!,
-    environment: env.SENTRY_ENV!,
+    dsn: process.env.SENTRY_DSN!,
+    environment: process.env.SENTRY_ENV!,
     // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
     tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
     integrations: [

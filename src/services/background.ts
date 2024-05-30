@@ -1,12 +1,11 @@
 import { KJUR, b64utoutf8 } from "jsrsasign";
-import env from "../env";
 import * as Sentry from "@sentry/browser";
 
 try {
-  if (env.SENTRY_ENV) {
+  if (process.env.SENTRY_ENV) {
     Sentry.init({
-      dsn: env.SENTRY_DSN!,
-      environment: env.SENTRY_ENV!,
+      dsn: process.env.SENTRY_DSN!,
+      environment: process.env.SENTRY_ENV!,
       // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
       tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
       // Performance Monitoring
@@ -110,7 +109,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             user_info.iss === "accounts.google.com") &&
           user_info!.aud === CLIENT_ID
         ) {
-          fetch(`${env.API_BASE_URL}/api/session`, {
+          fetch(`${process.env.API_BASE_URL}/api/session`, {
             method: "POST",
             headers: {
               Authorization: `Bearer ${id_token}`,
@@ -129,7 +128,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
     return true;
   } else if (request.message === "logout") {
-    fetch(`${env.API_BASE_URL}/api/session`, {
+    fetch(`${process.env.API_BASE_URL}/api/session`, {
       method: "DELETE",
       credentials: "include",
     })
@@ -140,7 +139,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     return true;
   } else if (request.message === "checkAuthStatus") {
-    fetch(`${env.API_BASE_URL}/api/session`, {
+    fetch(`${process.env.API_BASE_URL}/api/session`, {
       method: "GET",
       credentials: "include",
     })

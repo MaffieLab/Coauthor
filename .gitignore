@@ -1,5 +1,7 @@
 node_modules
 build
 *.zip
-# Sentry Auth Token
-.env.sentry-build-plugin
+.env.development.public
+.env.production.public
+.env.development.private
+.env.production.private
