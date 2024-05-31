@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# TODO optimize to run this only on modified files
+echo "Checking code style..."
+npm run style:check 
+if [ $? != 0 ];
+then
+  git restore --staged .
+  echo "Formatting issues detected."
+  echo "There may be code style issues with the files you are committing."
+  echo "Fix formatting issues, then commit again."
+  echo "Remember to re-stage your files with git add!"
+  exit 1
+fi
+
+echo "All good to commit!"
+exit 0
