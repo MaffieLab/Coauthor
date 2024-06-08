@@ -300,9 +300,7 @@ const globalStore: {
 };
 
 (async () => {
-  console.log("starting");
   if (decisionsPage()) {
-    //console.log('in the decision loop')
     const manuscriptData = getDecisionData();
     globalStore.manuscriptData = manuscriptData;
     addDecisionsColumn(manuscriptData);
