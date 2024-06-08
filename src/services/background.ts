@@ -19,6 +19,27 @@ try {
   console.error(e);
 }
 
+const CLIENT_ID = encodeURIComponent(
+  "386855698885-huf3aglc5f7s4cni7fmll16ki66ho155.apps.googleusercontent.com"
+);
+const RESPONSE_TYPE = encodeURIComponent("id_token");
+const REDIRECT_URI = encodeURIComponent(
+  "https://ahajebjbfifafhoifinahkeifcgfpocl.chromiumapp.org"
+);
+
+const STATE = encodeURIComponent("jkls3n");
+const SCOPE = encodeURIComponent("openid");
+const PROMPT = encodeURIComponent("consent");
+
+function createOauth2URL() {
+  let nonce = encodeURIComponent(
+    Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+  );
+  let url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${REDIRECT_URI}&state=${STATE}&scope=${SCOPE}&prompt=${PROMPT}&nonce=${nonce}`;
+  return url;
+}
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // handles getData for showing stats on the author page,
   // postData for posting new manuscripts to server
@@ -58,32 +79,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse(false);
       });
     return true;
-  }
-});
-
-const CLIENT_ID = encodeURIComponent(
-  "386855698885-huf3aglc5f7s4cni7fmll16ki66ho155.apps.googleusercontent.com"
-);
-const RESPONSE_TYPE = encodeURIComponent("id_token");
-const REDIRECT_URI = encodeURIComponent(
-  "https://ahajebjbfifafhoifinahkeifcgfpocl.chromiumapp.org"
-);
-
-const STATE = encodeURIComponent("jkls3n");
-const SCOPE = encodeURIComponent("openid");
-const PROMPT = encodeURIComponent("consent");
-
-function createOauth2URL() {
-  let nonce = encodeURIComponent(
-    Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15)
-  );
-  let url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${REDIRECT_URI}&state=${STATE}&scope=${SCOPE}&prompt=${PROMPT}&nonce=${nonce}`;
-  return url;
-}
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message === "login") {
+  } else if (request.message === "login") {
     chrome.identity.launchWebAuthFlow(
       {
         url: createOauth2URL(),
