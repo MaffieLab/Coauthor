@@ -66,6 +66,7 @@ const createHeader = (cell_fill: string, rowNumber: number) => {
   ) as HTMLTableElement;
   authorDashboard!.rows[rowNumber].appendChild(header);
 };
+
 const addDecisionsColumn = (ms_dataObject: Manuscript[]) => {
   const authorDashboard = document.getElementById(
     "authorDashboardQueue"
@@ -81,16 +82,19 @@ const addDecisionsColumn = (ms_dataObject: Manuscript[]) => {
   }
 };
 
-const getDecisionData = () => {
-  /// reads the decision table.
-  const authorDashboard = document.getElementById(
+const getManuscriptData = (): Manuscript[] => {
+  const manuscriptTable = document.getElementById(
     "authorDashboardQueue"
   ) as HTMLTableElement;
-  const authorDashboardRows = authorDashboard.rows; ///main table
-  const tableHeaders = authorDashboardRows[0].cells;
-  const manuscript_data = {};
-  const index = getIndicies(tableHeaders);
-  const ms_data: Manuscript[] = [];
+
+  const manuscriptTableHeaderRow = manuscriptTable.tHead!.rows[0];
+  const manuscriptTableBodyRows = manuscriptTable.tBodies[0].rows;
+
+  // Get the indices of the columns of interest in the table.
+  // A more flexible approach than simply making an assumption about
+  // what order these columns appear (or if they appear at all)
+  const columnIndices = getColumnIndices(manuscriptTableHeaderRow);
+
   // Journal's name appears on mobile viewport widths
   const journalFullName = (
     document.getElementsByClassName(
@@ -98,112 +102,105 @@ const getDecisionData = () => {
     )[0] as HTMLAnchorElement
   ).text;
 
-  const journal = document.URL.split("/")[3];
+  const journalID = document.URL.split("/")[3];
 
-  for (let i = 1; i < authorDashboardRows.length; i++) {
-    let data = newManuscript();
-    const row: HTMLTableRowElement = authorDashboardRows[i];
-    const manuscriptID = row.cells[index.ID].textContent!.trim();
-    data["manuscriptID"] = manuscriptID;
-    data["journal"] = journal;
-    let submission_date: string = "";
+  const manuscripts: Manuscript[] = [];
+
+  for (const manuscriptRow of manuscriptTableBodyRows) {
+    const manuscript = newManuscript();
+    manuscript["journal"] = journalID;
+    manuscript["journalFullName"] = journalFullName;
+    const manuscriptID =
+      manuscriptRow.cells[columnIndices.id].textContent!.trim();
+    manuscript["manuscriptID"] = manuscriptID;
+    let submissionDate: string = "";
     try {
-      submission_date = row.cells[index.Submitted].textContent!.trim();
+      submissionDate =
+        manuscriptRow.cells[columnIndices.submitted].textContent!.trim();
     } catch (error) {
-      submission_date = row.cells[index.Created].textContent!.trim();
+      submissionDate =
+        manuscriptRow.cells[columnIndices.created].textContent!.trim();
     }
-    const status = row.cells[index.Status];
-    const decision = getDecisionType(status);
-    if (!decision) {
-      continue;
-    }
-    data["decision"] = decision!.decision;
-    data["submissionDate"] = submission_date;
-    data["decisionDate"] = decision.decisionDate;
-    data["journalFullName"] = journalFullName;
-    ms_data.push(data);
+    manuscript["submissionDate"] = submissionDate;
+    const status = manuscriptRow.cells[columnIndices.status];
+    const decisionInfo = getDecisionInfo(status);
+    manuscript["decision"] = decisionInfo!.decision;
+    manuscript["decisionDate"] = decisionInfo.decisionDate;
+    manuscripts.push(manuscript);
   }
-  return ms_data;
+
+  return manuscripts;
 };
 
 const addReviewTimeColumn = () => {
   /// adds a column to the table for the number of days that a manuscript has been under review
-  const authorDashboardRows = (
-    document.getElementById("authorDashboardQueue") as HTMLTableElement
-  ).rows;
-  const tableHeaders = authorDashboardRows[0].cells;
+  const manuscriptTable = document.getElementById(
+    "authorDashboardQueue"
+  ) as HTMLTableElement;
+
+  const manuscriptTableHeaderRow = manuscriptTable.tHead!.rows[0];
+  const authorDashboardRows = manuscriptTable.rows;
+
   createHeader("Days Under Review", 0);
-  const index = getIndicies(tableHeaders);
+  const index = getColumnIndices(manuscriptTableHeaderRow);
   for (let i = 1; i < authorDashboardRows.length; i++) {
     const submission_date =
-      authorDashboardRows[i].cells[index.Submitted].textContent!.trim();
+      authorDashboardRows[i].cells[index.submitted].textContent!.trim();
     const days = daysUnderReview(submission_date, Date());
     createHeader(String(days), i);
   }
 };
-const getIndicies = (tableHeaders: HTMLCollectionOf<HTMLTableCellElement>) => {
-  /// takes a list of table headers and returns a dictionary of name:index
-  let index = {
-    Submitted: 0,
-    Created: 0,
-    Title: 0,
-    ID: 0,
-    Status: 0,
+
+const getColumnIndices = (manuscriptTableHeaderRow: HTMLTableRowElement) => {
+  const columnIndices = {
+    status: -1,
+    id: -1,
+    submitted: -1,
+    created: -1,
   };
 
-  find_colName(tableHeaders, "Submitted", index);
-  find_colName(tableHeaders, "Created", index);
-  find_colName(tableHeaders, "Title", index);
-  find_colName(tableHeaders, "ID", index);
-  find_colName(tableHeaders, "Status", index);
-  try {
-    find_colName(tableHeaders, "Decisioned", index);
-  } catch (err) {
-    console.log(err);
-  }
-  return index;
-};
-
-const find_colName = (
-  tableHeaders: HTMLCollectionOf<HTMLTableCellElement>,
-  name: string,
-  obj: any
-) => {
-  // takes a column headers list and returns name:index
-  // or "not found"
-  for (let i = 0; i < tableHeaders.length; i++) {
-    if (tableHeaders[i].textContent!.trim() == name) {
-      obj[name] = i;
-    }
-    {
-      {
-        ("not found");
+  for (let i = 0; i < manuscriptTableHeaderRow.cells.length; i++) {
+    // Text content comparison is only reliable way of identifying which column is which
+    const headerElement = manuscriptTableHeaderRow.cells[i];
+    const headerText = headerElement.textContent;
+    if (headerText) {
+      switch (headerText.trim()) {
+        case "Status":
+          columnIndices.status = i;
+          break;
+        case "ID":
+          columnIndices.id = i;
+          break;
+        case "Submitted":
+          columnIndices.submitted = i;
+          break;
+        case "Created":
+          columnIndices.created = i;
+          break;
+        default:
+          break;
       }
     }
   }
+
+  return columnIndices;
 };
 
-const getDecisionType = (authorDashboardCell: HTMLTableCellElement) => {
-  // Takes authorDashboard cell, returns decision: decision, decisionDate: date object
-  // begins with reject then revision and finally accept
-  // "accept with minor revisions" => revision, not accept.
-  const a = authorDashboardCell.getElementsByClassName("pagecontents");
-  for (let i = 0; i < a.length; i++) {
-    const textContent = a[i].textContent!;
-    if (
-      textContent.includes("Reject") ||
-      textContent.includes("Revision") ||
-      textContent.includes("Accept")
-    ) {
-      const dat = a[i].textContent!;
-      const decision = dat.split("(")[0].trim();
-      let decisionDate = dat.split("(")[1].trim();
-      decisionDate = decisionDate.split(")")[0].trim();
-      return { decision: decision, decisionDate: decisionDate };
-    } else {
-      continue;
-    }
-  }
+const getDecisionInfo = (authorDashboardCell: HTMLTableCellElement) => {
+  // Assume decision type and date are in the first element of the collection
+  const decisionInfoElement =
+    authorDashboardCell.getElementsByClassName("pagecontents")[0];
+  // Assume structure is `${decision} (${decisionDate})`
+  const decisionInfoText = decisionInfoElement.textContent!;
+
+  const tokens = decisionInfoText.split("(");
+  const decision = tokens[0].trim();
+  const decisionDate = tokens[1].slice(0, -1);
+
+  return {
+    decision: decision,
+    decisionDate: decisionDate,
+  };
 };
 
 export const manuscriptUploadStatusColumn: {
@@ -298,7 +295,7 @@ const globalStore: {
 
 (async () => {
   if (decisionsPage()) {
-    const manuscriptData = getDecisionData();
+    const manuscriptData = getManuscriptData();
     globalStore.manuscriptData = manuscriptData;
     addDecisionsColumn(manuscriptData);
     renderDashboard();
