@@ -27,9 +27,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     try {
       fetch(url, {
         method: "GET",
-        headers: {
-          journal: request.journal,
-        },
       })
         .then((response) => response.json())
         .then((response) => sendResponse(response))

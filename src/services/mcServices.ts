@@ -13,7 +13,6 @@ export async function getStats(journal: string) {
   let response = await chrome.runtime.sendMessage({
     contentScriptQuery: "getdata",
     url: `${process.env.API_BASE_URL}/api/journals/${journal}/stats`,
-    journal: journal,
   });
   return response;
 }
