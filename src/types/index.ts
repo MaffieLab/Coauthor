@@ -7,18 +7,26 @@ export interface JournalStats {
 
 export interface Manuscript {
   manuscriptID: string;
-  journal: string;
   decision: string;
   submissionDate: string;
   decisionDate: string;
-  journalFullName: string;
 }
+
+export interface ManuscriptData {
+  journalUrlSlug: string;
+  journalName: string;
+  manuscripts: Manuscript[];
+}
+
+export const newManuscriptData = (): ManuscriptData => ({
+  journalUrlSlug: "",
+  journalName: "",
+  manuscripts: [],
+});
 
 export const newManuscript = (): Manuscript => ({
   manuscriptID: "",
-  journal: "",
   decision: "",
   submissionDate: "",
   decisionDate: "",
-  journalFullName: "",
 });

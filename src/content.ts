@@ -1,5 +1,10 @@
 // Notes: Title sometimes has "Files Archived" on decisions page.
-import { Manuscript, newManuscript } from "./types/index";
+import {
+  Manuscript,
+  ManuscriptData,
+  newManuscript,
+  newManuscriptData,
+} from "./types/index";
 import { sendData } from "./services/mcServices";
 import { renderDashboard } from "./services/dashboard";
 import * as Sentry from "@sentry/browser";
@@ -82,7 +87,7 @@ const addDecisionsColumn = (ms_dataObject: Manuscript[]) => {
   }
 };
 
-const getManuscriptData = (): Manuscript[] => {
+const getManuscriptData = (): ManuscriptData => {
   const manuscriptTable = document.getElementById(
     "authorDashboardQueue"
   ) as HTMLTableElement;
@@ -104,12 +109,12 @@ const getManuscriptData = (): Manuscript[] => {
 
   const journalID = document.URL.split("/")[3];
 
-  const manuscripts: Manuscript[] = [];
+  const manuscriptData = newManuscriptData();
+  manuscriptData.journalUrlSlug = journalID;
+  manuscriptData.journalName = journalFullName;
 
   for (const manuscriptRow of manuscriptTableBodyRows) {
     const manuscript = newManuscript();
-    manuscript["journal"] = journalID;
-    manuscript["journalFullName"] = journalFullName;
     const manuscriptID =
       manuscriptRow.cells[columnIndices.id].textContent!.trim();
     manuscript["manuscriptID"] = manuscriptID;
@@ -126,10 +131,10 @@ const getManuscriptData = (): Manuscript[] => {
     const decisionInfo = getDecisionInfo(status);
     manuscript["decision"] = decisionInfo!.decision;
     manuscript["decisionDate"] = decisionInfo.decisionDate;
-    manuscripts.push(manuscript);
+    manuscriptData.manuscripts.push(manuscript);
   }
 
-  return manuscripts;
+  return manuscriptData;
 };
 
 const addReviewTimeColumn = () => {
@@ -288,16 +293,16 @@ export const manuscriptUploadStatusColumn: {
 };
 
 const globalStore: {
-  manuscriptData: Manuscript[];
+  manuscriptData: ManuscriptData;
 } = {
-  manuscriptData: [],
+  manuscriptData: newManuscriptData(),
 };
 
 (async () => {
   if (decisionsPage()) {
     const manuscriptData = getManuscriptData();
     globalStore.manuscriptData = manuscriptData;
-    addDecisionsColumn(manuscriptData);
+    addDecisionsColumn(manuscriptData.manuscripts);
     renderDashboard();
     chrome.runtime.sendMessage(
       { message: "checkAuthStatus" },
