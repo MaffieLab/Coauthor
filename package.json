@@ -9,7 +9,8 @@
     "test": "jest",
     "dev": "cross-env NODE_ENV=development UPLOAD_SOURCEMAPS=false webpack --watch --config webpack.dev.js",
     "dev:sourcemaps": "cross-env NODE_ENV=development UPLOAD_SOURCEMAPS=true webpack --watch --config webpack.dev.js",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js"
+    "build:prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
+    "build:staging": "cross-env NODE_ENV=staging webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",
