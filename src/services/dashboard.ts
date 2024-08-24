@@ -1,5 +1,3 @@
-import { getStats } from "./mcServices";
-import { JournalStats } from "../types";
 import { manuscriptUploadStatusColumn } from "../content";
 
 export const renderDashboard = async () => {
@@ -16,7 +14,6 @@ export const renderDashboard = async () => {
   header.style.margin = "0";
   dashboard!.appendChild(header);
   renderLoginInterface();
-  renderStatsTable();
 };
 
 const renderLoginInterface = () => {
@@ -102,43 +99,4 @@ const renderLoginInterface = () => {
       }
     }
   );
-};
-
-const renderStatsTable = async () => {
-  const journal = document.URL.split("/")[3];
-  const journalStats: JournalStats = await getStats(journal);
-
-  const dashboard = document.getElementById("coauthor-dashboard");
-  const statsTable = document.createElement("section");
-  statsTable.style.padding = "0px";
-  const statsHeader = document.createElement("header");
-  statsHeader.textContent = "Journal Statistics";
-  statsHeader.style.margin = "0px";
-  statsHeader.className = "nav-header";
-
-  statsTable.appendChild(statsHeader);
-
-  const statsList = document.createElement("ul");
-  const len = Object.keys(journalStats).length;
-  const headers = [
-    "Avg. Days to 1st Decision",
-    "Standard Deviation",
-    "Accept % | 1st R&R",
-    "Initial Submit => 1st R&R",
-  ];
-  for (let i = 0; i < len; i++) {
-    const new_node = document.createElement("li");
-    new_node.style.lineHeight = "20px";
-    new_node.style.fontSize = "14px";
-    new_node.style.marginBottom = "10px";
-    new_node.style.marginTop = "10px";
-    new_node.style.color = "#0083bf";
-    new_node.style.padding = "1px 10px";
-    new_node.className = "nav-submenu";
-    const value = Object.values(journalStats)[i];
-    new_node.innerText = `${headers[i]}: ${value === null ? "No Data" : value}`;
-    statsList.appendChild(new_node);
-  }
-  statsTable!.appendChild(statsList);
-  dashboard?.appendChild(statsTable);
 };
