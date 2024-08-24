@@ -20,8 +20,6 @@ try {
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  // handles getData for showing stats on the author page,
-  // postData for posting new manuscripts to server
   if (request.contentScriptQuery == "getdata") {
     const url = request.url;
     try {
