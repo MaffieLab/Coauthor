@@ -24,17 +24,6 @@ if (process.env.SENTRY_ENV) {
   });
 }
 
-const submittedPage = (): boolean => {
-  // a function that returns true if the user is on the "Submitted Manuscripts" page.
-  // Else false.
-  const h1 = document.getElementsByTagName("h1");
-  if (h1.length < 1) {
-    return false;
-  } else {
-    return h1[0].textContent!.toLowerCase().includes("submitted");
-  }
-};
-
 const decisionsPage = (): boolean => {
   // Returns true if the user is on the "Manuscripts with Decisions" page.
   const h1 = document.getElementsByTagName("h1");
@@ -135,25 +124,6 @@ const getManuscriptData = (): ManuscriptData => {
   }
 
   return manuscriptData;
-};
-
-const addReviewTimeColumn = () => {
-  /// adds a column to the table for the number of days that a manuscript has been under review
-  const manuscriptTable = document.getElementById(
-    "authorDashboardQueue"
-  ) as HTMLTableElement;
-
-  const manuscriptTableHeaderRow = manuscriptTable.tHead!.rows[0];
-  const authorDashboardRows = manuscriptTable.rows;
-
-  createHeader("Days Under Review", 0);
-  const index = getColumnIndices(manuscriptTableHeaderRow);
-  for (let i = 1; i < authorDashboardRows.length; i++) {
-    const submission_date =
-      authorDashboardRows[i].cells[index.submitted].textContent!.trim();
-    const days = daysUnderReview(submission_date, Date());
-    createHeader(String(days), i);
-  }
 };
 
 const getColumnIndices = (manuscriptTableHeaderRow: HTMLTableRowElement) => {
@@ -312,7 +282,5 @@ const globalStore: {
         }
       }
     );
-  } else if (submittedPage()) {
-    addReviewTimeColumn();
   }
 })();
