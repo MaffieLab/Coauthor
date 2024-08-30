@@ -24,17 +24,14 @@ if (process.env.SENTRY_ENV) {
   });
 }
 
-const decisionsPage = (): boolean => {
-  // Returns true if the user is on the "Manuscripts with Decisions" page.
-  const h1 = document.getElementsByTagName("h1");
-  if (h1.length < 1) {
-    return false;
-  } else {
-    return (
-      h1[0].textContent!.toLowerCase().includes("decisions") ||
-      h1[0].textContent!.toLowerCase().includes("co-authored")
-    );
+const onManuscriptsWithDecisionsPage = (): boolean => {
+  const h1Elements = document.getElementsByTagName("h1");
+  if (h1Elements.length === 1) {
+    if (h1Elements[0].textContent! === "Manuscripts with Decisions") {
+      return true;
+    }
   }
+  return false;
 };
 
 const daysUnderReview = (submitted: string, returned: string): number => {
@@ -269,7 +266,7 @@ const globalStore: {
 };
 
 (async () => {
-  if (decisionsPage()) {
+  if (onManuscriptsWithDecisionsPage()) {
     const manuscriptData = getManuscriptData();
     globalStore.manuscriptData = manuscriptData;
     addDecisionsColumn(manuscriptData.manuscripts);
