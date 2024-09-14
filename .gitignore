@@ -7,3 +7,4 @@ build
 .env.production.private
 .env.staging.private
 .env.staging.public
+.env.sentry-build-plugin
