@@ -9,7 +9,7 @@ const plugins = [
   new CopyPlugin({
     patterns: [
       { from: "./src/manifest.json", to: "./manifest.json" },
-      { from: "./src/ui" },
+      { from: "./src/popup" },
       { from: "./src/assets", to: "./assets" },
     ],
   }),

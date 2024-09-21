@@ -265,12 +265,64 @@ const globalStore: {
   manuscriptData: newManuscriptData(),
 };
 
+const renderTab = () => {
+  const coauthorTab = document.createElement("div");
+  coauthorTab.style.display = "flex";
+  coauthorTab.style.justifyContent = "center";
+  coauthorTab.style.alignItems = "center";
+  coauthorTab.style.border = "solid";
+
+  coauthorTab.style.borderWidth = "3.5px";
+
+  coauthorTab.style.borderColor = "#4b749b";
+
+  const coauthorImg = document.createElement("img");
+  coauthorImg.src = chrome.runtime.getURL("assets/icon128.png");
+  coauthorImg.style.width = "40px";
+  coauthorImg.style.height = "40px";
+  coauthorTab.appendChild(coauthorImg);
+
+  coauthorTab.id = "coauthor-tab";
+  coauthorTab.style.width = "56px";
+  coauthorTab.style.height = "56px";
+  coauthorTab.style.top = "105px";
+  coauthorTab.style.right = "0px";
+  coauthorTab.style.zIndex = "2147483647";
+  coauthorTab.style.backgroundColor = "white";
+  coauthorTab.style.position = "fixed";
+  coauthorTab.style.borderBottomLeftRadius = ".375rem";
+  coauthorTab.style.borderTopLeftRadius = ".375rem";
+
+  coauthorTab.addEventListener("click", () => {
+    console.log("click");
+    const panel = document.createElement("div");
+    panel.id = "coauthor-expanded";
+    panel.style.width = "300px";
+    panel.style.height = "400px";
+    panel.style.top = "10px";
+    panel.style.right = "10px";
+    panel.style.zIndex = "2147483647";
+    panel.style.backgroundColor = "#252525";
+    panel.style.position = "fixed";
+    panel.style.borderRadius = ".375rem";
+    panel.style.boxShadow = "";
+    // panel.style.borderTopLeftRadius = ".375rem";
+    document.querySelector("html")?.appendChild(panel);
+  });
+
+  document.querySelector("html")?.appendChild(coauthorTab);
+};
+
 (async () => {
   if (onManuscriptsWithDecisionsPage()) {
+    renderTab();
     const manuscriptData = getManuscriptData();
     globalStore.manuscriptData = manuscriptData;
     addDecisionsColumn(manuscriptData.manuscripts);
     renderDashboard();
+    chrome.storage.local.set({
+      manuscriptData: manuscriptData,
+    });
     chrome.runtime.sendMessage(
       { message: "checkAuthStatus" },
       async function (response) {

@@ -38,7 +38,7 @@ module.exports = merge(common, {
             return modify(content);
           },
         },
-        { from: "./src/ui" },
+        { from: "./src/popup" },
         { from: "./src/assets", to: "./assets" },
       ],
     }),
