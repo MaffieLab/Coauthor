@@ -1,6 +1,7 @@
 const path = require("path");
 const { DefinePlugin } = require("webpack");
 const dotenv = require("dotenv");
+const CopyPlugin = require("copy-webpack-plugin");
 
 // Load env vars that should be present in the final build.
 const publicEnvVars = dotenv.config({
@@ -9,6 +10,18 @@ const publicEnvVars = dotenv.config({
 
 // Load env vars that shouldn't be present in the final build but are required during the build process.
 dotenv.config({ path: `.env.${process.env.NODE_ENV}.private` });
+
+function modify(buffer) {
+  // copy-webpack-plugin passes a buffer
+  var manifest = JSON.parse(buffer.toString());
+
+  // Remove any host permissions not required in production
+  manifest.host_permissions = [`${process.env.API_BASE_URL}/*`];
+
+  // pretty print to JSON with two spaces
+  manifest_JSON = JSON.stringify(manifest, null, 2);
+  return manifest_JSON;
+}
 
 module.exports = {
   /* 
@@ -43,6 +56,20 @@ module.exports = {
      */
     new DefinePlugin({
       "process.env": JSON.stringify(publicEnvVars),
+    }),
+
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "./src/manifest.json",
+          to: "./manifest.json",
+          transform(content, path) {
+            return modify(content);
+          },
+        },
+        { from: "./src/ui" },
+        { from: "./src/assets", to: "./assets" },
+      ],
     }),
   ],
   watchOptions: {
