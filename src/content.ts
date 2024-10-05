@@ -27,7 +27,10 @@ if (process.env.SENTRY_ENV) {
 const onManuscriptsWithDecisionsPage = (): boolean => {
   const h1Elements = document.getElementsByTagName("h1");
   if (h1Elements.length === 1) {
-    if (h1Elements[0].textContent! === "Manuscripts with Decisions") {
+    if (
+      h1Elements[0].textContent! === "Manuscripts with Decisions" ||
+      "Manuscripts I Have Co-Authored"
+    ) {
       return true;
     }
   }
@@ -62,7 +65,7 @@ const addDecisionsColumn = (ms_dataObject: Manuscript[]) => {
   const authorDashboard = document.getElementById(
     "authorDashboardQueue"
   ) as HTMLTableElement;
-  createHeader("Days Until Decision", 0);
+  createHeader("Days Under Review", 0);
   for (let i = 0; i < ms_dataObject.length; i++) {
     let header = document.createElement("td");
     header.innerText = `Days: ${daysUnderReview(
@@ -165,14 +168,29 @@ const getDecisionInfo = (authorDashboardCell: HTMLTableCellElement) => {
   // Assume structure is `${decision} (${decisionDate})`
   const decisionInfoText = decisionInfoElement.textContent!;
 
-  const tokens = decisionInfoText.split("(");
-  const decision = tokens[0].trim();
-  const decisionDate = tokens[1].slice(0, -1);
-
-  return {
-    decision: decision,
-    decisionDate: decisionDate,
-  };
+  try {
+    const tokens = decisionInfoText.split("(");
+    const decision = tokens[0].trim();
+    const decisionDate = tokens[1].slice(0, -1);
+    return {
+      decision: decision,
+      decisionDate: decisionDate,
+    };
+  } catch (error) {
+    const decision = "Under Review";
+    const decisionDate = new Date();
+    const formattedDate = decisionDate
+      .toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+      .replace(/ /g, "-");
+    return {
+      decision: decision,
+      decisionDate: formattedDate,
+    };
+  }
 };
 
 export const manuscriptUploadStatusColumn: {
