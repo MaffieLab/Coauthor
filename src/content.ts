@@ -229,7 +229,13 @@ export const manuscriptUploadStatusColumn: {
     this.columnHeader = header;
 
     this.render();
-    const uploadSuccessful = await sendData(globalStore.manuscriptData);
+    const decidedManuscripts = {
+      ...globalStore,
+      manuscripts: globalStore.manuscriptData.manuscripts.filter(
+        (x) => x.decision != "Under Review"
+      ),
+    };
+    const uploadSuccessful = await sendData(decidedManuscripts.manuscriptData);
     this.uploadStatus = uploadSuccessful ? "SUCCESS" : "FAILURE";
     this.render();
   },
@@ -245,12 +251,23 @@ export const manuscriptUploadStatusColumn: {
         }
         break;
       case "SUCCESS":
-        for (const cell of this.columnCells) {
-          const imageElement = cell.children[0] as HTMLImageElement;
-          imageElement.src = chrome.runtime.getURL("assets/greenCheck.png");
-          imageElement.alt = "Green checkmark indicating upload success";
-          imageElement.title =
-            "Manuscript successfully received by Coauthor servers.";
+        for (let i in globalStore.manuscriptData.manuscripts) {
+          if (
+            globalStore.manuscriptData.manuscripts[i].decision != "Under Review"
+          ) {
+            let cell = this.columnCells[i];
+            const imageElement = cell.children[0] as HTMLImageElement;
+            imageElement.src = chrome.runtime.getURL("assets/greenCheck.png");
+            imageElement.alt = "Green checkmark indicating upload success";
+            imageElement.title =
+              "Manuscript successfully received by Coauthor servers.";
+          } else if (
+            globalStore.manuscriptData.manuscripts[i].decision == "Under Review"
+          ) {
+            let cell = this.columnCells[i];
+            cell.innerText =
+              "No: Only manuscripts with decisions are uploaded.";
+          }
         }
         break;
       default:
