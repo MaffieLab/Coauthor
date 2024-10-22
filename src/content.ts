@@ -256,6 +256,8 @@ export const manuscriptUploadStatusColumn: {
     for (const cell of this.columnCells!) {
       cell.remove();
     }
+    this.columnCells = [];
+    this.uploadStatus = "PENDING";
   },
 };
 
