@@ -29,7 +29,7 @@ const onManuscriptsWithDecisionsPage = (): boolean => {
   if (h1Elements.length === 1) {
     if (
       h1Elements[0].textContent! === "Manuscripts with Decisions" ||
-      "Manuscripts I Have Co-Authored"
+      h1Elements[0].textContent! === "Manuscripts I Have Co-Authored"
     ) {
       return true;
     }
