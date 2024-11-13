@@ -38,5 +38,5 @@ jobs:
       - name: Archive chrome-extension artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coauthor-${{ github.sha }}
+          name: coauthor-${{ github.event.pull_request.head.sha }}
           path: coauthor-${{ github.event.pull_request.head.sha }}.zip
