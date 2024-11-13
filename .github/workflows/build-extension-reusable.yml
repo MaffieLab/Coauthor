@@ -40,4 +40,3 @@ jobs:
         with:
           name: coauthor-${{ github.sha }}
           path: coauthor-${{ github.event.pull_request.head.sha }}.zip
-
