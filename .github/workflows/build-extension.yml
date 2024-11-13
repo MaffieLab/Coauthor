@@ -1,0 +1,16 @@
+name: Build Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        type: environment
+        required: true
+
+jobs:
+  build-chrome-extension:
+    uses: ./.github/workflows/build-extension-reusable.yml
+    with:
+      environment: ${{ github.event.inputs.environment }}
+    secrets: inherit
