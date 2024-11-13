@@ -1,4 +1,4 @@
-name: Build Extension
+name: Build Extension (Use to trigger builds)
 
 on:
   workflow_dispatch:
@@ -7,6 +7,8 @@ on:
         description: "Target environment"
         type: environment
         required: true
+
+run-name: Build ${{ github.event.inputs.environment }} extension
 
 jobs:
   build-chrome-extension:
