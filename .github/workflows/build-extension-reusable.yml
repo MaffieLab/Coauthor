@@ -33,10 +33,10 @@ jobs:
       - name: Build extension
         run: |
           NODE_ENV=${{ inputs.environment }} webpack --config webpack.prod.js
-          zip -r coauthor-${{ github.event.pull_request.head.sha }}.zip build
+          zip -r coauthor-${{ github.sha }}.zip build
 
       - name: Archive chrome-extension artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coauthor-${{ github.event.pull_request.head.sha }}
-          path: coauthor-${{ github.event.pull_request.head.sha }}.zip
+          name: coauthor-${{ github.sha }}
+          path: coauthor-${{ github.sha }}.zip
