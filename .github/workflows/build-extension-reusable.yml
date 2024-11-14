@@ -1,10 +1,14 @@
-name: Build Extension
+name: Build Extension (reusable workflow)
 
 on:
   workflow_call:
     inputs:
       environment:
         description: "Target environment"
+        type: string
+        required: true
+      archive-name:
+        description: "Name of archived build file"
         type: string
         required: true
 
@@ -32,11 +36,10 @@ jobs:
 
       - name: Build extension
         run: |
-          cross-env NODE_ENV=${{ inputs.environment }} webpack --config webpack.prod.js
-          zip -r chrome-extension-${{ github.event.pull_request.head.sha }}.zip dist
+          NODE_ENV=${{ inputs.environment }} webpack --config webpack.prod.js
 
-      - name: Archive chrome-extension artifact
+      - name: Archive extension artifact
         uses: actions/upload-artifact@v4
         with:
-          name: chrome-extension-${{ github.sha }}
-          path: chrome-extension-${{ github.event.pull_request.head.sha }}.zip
+          name: "${{inputs.archive-name}}"
+          path: build

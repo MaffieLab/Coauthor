@@ -1,4 +1,4 @@
-name: Build Extension
+name: Build Extension (Use to trigger builds)
 
 on:
   workflow_dispatch:
@@ -8,9 +8,12 @@ on:
         type: environment
         required: true
 
+run-name: Build ${{ github.event.inputs.environment }} extension
+
 jobs:
   build-chrome-extension:
     uses: ./.github/workflows/build-extension-reusable.yml
     with:
       environment: ${{ github.event.inputs.environment }}
+      archive-name: coauthor-${{ github.sha }}
     secrets: inherit
