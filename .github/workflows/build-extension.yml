@@ -15,4 +15,5 @@ jobs:
     uses: ./.github/workflows/build-extension-reusable.yml
     with:
       environment: ${{ github.event.inputs.environment }}
+      archive-name: coauthor-${{ github.sha }}
     secrets: inherit
