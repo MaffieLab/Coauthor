@@ -24,25 +24,9 @@ jobs:
           echo "VERSION_BUMP_FOUND=$version_bump_found" >> $GITHUB_OUTPUT
           echo "VERSION=$version" >> $GITHUB_OUTPUT
 
-  push-tag:
-    name: Push Tag
-    needs: check-for-version-bump
-    runs-on: ubuntu-latest
-    if: needs.check-for-version-bump.outputs.version-bump-found == '0'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Push Tag
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "github-actions@users.noreply.github.com"
-          git tag ${{ needs.check-for-version-bump.outputs.version }}
-          git push origin ${{ needs.check-for-version-bump.outputs.version }}
-
   build-chrome-extension:
     name: Build extension
-    needs: [push-tag, check-for-version-bump]
+    needs: [check-for-version-bump]
     uses: ./.github/workflows/build-extension-reusable.yml
     with:
       environment: production
@@ -65,16 +49,34 @@ jobs:
 
       - name: Install webstore cli
         run: |
-          npm install -g chrome-webstore-upload-cli
+          npm install -g chrome-webstore-upload-cli@3.3.1
 
       - name: Upload step
         run: |
-          chrome-webstore-upload publish \\
-            --source coauthor-${{needs.check-for-version-bump.outputs.version}}.zip \\
-            --extension-id ${{ vars.EXTENSION_ID }} \\
-            --client-id ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_ID }} \\
-            --client-secret ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_SECRET }} \\
+          chrome-webstore-upload \
+            --source coauthor-${{needs.check-for-version-bump.outputs.version}}.zip \
+            --extension-id ${{ vars.EXTENSION_ID }} \
+            --client-id ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_ID }} \
+            --client-secret ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_SECRET }} \
             --refresh-token ${{ secrets.CI_GOOGLE_OAUTH_REFRESH_TOKEN }}
+
+  push-tag:
+    name: Push Tag
+    needs: [check-for-version-bump, upload-extension]
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    if: needs.check-for-version-bump.outputs.version-bump-found == '0'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Push Tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag ${{ needs.check-for-version-bump.outputs.version }}
+          git push origin ${{ needs.check-for-version-bump.outputs.version }}
 
   # Intentionally made a draft release instead of a official release
   # because the release shouldn't be finalized and made public
@@ -82,7 +84,9 @@ jobs:
   # and published (It could be rejected after uploading)
   create-draft-release:
     name: Create draft release
-    needs: [upload-extension, check-for-version-bump]
+    needs: [push-tag, check-for-version-bump]
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: softprops/action-gh-release@v2
