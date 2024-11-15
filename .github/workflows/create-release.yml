@@ -16,7 +16,9 @@ jobs:
       - name: Parse commit message for version
         id: step1
         run: |
-          match=$(echo "${{github.event.head_commit.message}}" | grep -E -o "chore: bump version \([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\)") 
+          set +e 
+          COMMIT_MESSAGE_HEADER=$(echo "${{github.event.head_commit.message}}" | head -n 1)
+          match=$(echo $COMMIT_MESSAGE_HEADER | grep -E -o "chore: bump version \([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\)") 
           version=$(echo $match | grep -E -o "[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+") 
           version_bump_found=$(echo $?)
           echo "VERSION_BUMP_FOUND=$version_bump_found" >> $GITHUB_OUTPUT
