@@ -27,6 +27,7 @@ jobs:
   build-chrome-extension:
     name: Build extension
     needs: [check-for-version-bump]
+    if: needs.check-for-version-bump.outputs.version-bump-found == '0'
     uses: ./.github/workflows/build-extension-reusable.yml
     with:
       environment: production
@@ -46,6 +47,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coauthor-${{needs.check-for-version-bump.outputs.version}}
+          path: ./build
+
+      # download artifact action unzips on download (not configurable) so must zip up again
+      - name: Archive build
+        run: |
+          zip -r coauthor-${{needs.check-for-version-bump.outputs.version}}.zip build
 
       - name: Install webstore cli
         run: |
@@ -66,7 +73,6 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
-    if: needs.check-for-version-bump.outputs.version-bump-found == '0'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
