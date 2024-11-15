@@ -1,0 +1,93 @@
+name: Create new release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-for-version-bump:
+    name: "Check for version bump"
+    runs-on: ubuntu-latest
+    outputs:
+      version-bump-found: ${{ steps.step1.outputs.VERSION_BUMP_FOUND }}
+      version: ${{ steps.step1.outputs.VERSION }}
+    steps:
+      - name: Parse commit message for version
+        id: step1
+        run: |
+          match=$(echo "${{github.event.head_commit.message}}" | grep -E -o "chore: bump version \([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\)") 
+          version=$(echo $match | grep -E -o "[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+") 
+          version_bump_found=$(echo $?)
+          echo "VERSION_BUMP_FOUND=$version_bump_found" >> $GITHUB_OUTPUT
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+
+  push-tag:
+    name: Push Tag
+    needs: check-for-version-bump
+    runs-on: ubuntu-latest
+    if: needs.check-for-version-bump.outputs.version-bump-found == '0'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Push Tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag ${{ needs.check-for-version-bump.outputs.version }}
+          git push origin ${{ needs.check-for-version-bump.outputs.version }}
+
+  build-chrome-extension:
+    name: Build extension
+    needs: [push-tag, check-for-version-bump]
+    uses: ./.github/workflows/build-extension-reusable.yml
+    with:
+      environment: production
+      archive-name: coauthor-${{needs.check-for-version-bump.outputs.version}}
+    secrets: inherit
+
+  upload-extension:
+    name: Upload extension to chrome web store
+    needs: [build-chrome-extension, check-for-version-bump]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "16.10"
+      # must use this to access previously uploaded artifact
+      - name: Download bundle artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coauthor-${{needs.check-for-version-bump.outputs.version}}
+
+      - name: Install webstore cli
+        run: |
+          npm install -g chrome-webstore-upload-cli
+
+      - name: Upload step
+        run: |
+          chrome-webstore-upload publish \\
+            --source coauthor-${{needs.check-for-version-bump.outputs.version}}.zip \\
+            --extension-id ${{ vars.EXTENSION_ID }} \\
+            --client-id ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_ID }} \\
+            --client-secret ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_SECRET }} \\
+            --refresh-token ${{ secrets.CI_GOOGLE_OAUTH_REFRESH_TOKEN }}
+
+  # Intentionally made a draft release instead of a official release
+  # because the release shouldn't be finalized and made public
+  # until we know for sure that the extension has been approved
+  # and published (It could be rejected after uploading)
+  create-draft-release:
+    name: Create draft release
+    needs: [upload-extension, check-for-version-bump]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            coauthor-${{needs.check-for-version-bump.outputs.version}}.zip
+          draft: true
+          generate_release_notes: true
+          tag_name: ${{needs.check-for-version-bump.outputs.version}}
+          name: ${{needs.check-for-version-bump.outputs.version}}
