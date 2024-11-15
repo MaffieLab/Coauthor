@@ -1,4 +1,3 @@
-// Notes: Title sometimes has "Files Archived" on decisions page.
 import {
   Manuscript,
   ManuscriptData,
