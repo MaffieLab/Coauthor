@@ -81,11 +81,13 @@ jobs:
   create-draft-release:
     name: Create draft release
     needs: [upload-extension, check-for-version-bump]
-    uses: softprops/action-gh-release@v2
-    with:
-      files: |
-        coauthor-${{needs.check-for-version-bump.outputs.version}}.zip
-      draft: true
-      generate_release_notes: true
-      tag_name: ${{needs.check-for-version-bump.outputs.version}}
-      name: ${{needs.check-for-version-bump.outputs.version}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            coauthor-${{needs.check-for-version-bump.outputs.version}}.zip
+          draft: true
+          generate_release_notes: true
+          tag_name: ${{needs.check-for-version-bump.outputs.version}}
+          name: ${{needs.check-for-version-bump.outputs.version}}
