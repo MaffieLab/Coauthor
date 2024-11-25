@@ -19,6 +19,15 @@ try {
   console.error(e);
 }
 
+chrome.runtime.onInstalled.addListener(function (object) {
+  const internalUrl = chrome.runtime.getURL("ui/onboarding/onboarding.html");
+  if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    chrome.tabs.create({ url: internalUrl }, function (tab) {
+      console.log("What are you doing here :)");
+    });
+  }
+});
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.contentScriptQuery == "getdata") {
     const url = request.url;

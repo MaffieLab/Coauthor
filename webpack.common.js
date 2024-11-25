@@ -40,7 +40,7 @@ class BuildManifestPlugin {
             service_worker: "background.js",
           },
           action: {
-            default_popup: "./ui.html",
+            default_popup: "./ui/popup/popup.html",
           },
           web_accessible_resources: [
             {
@@ -101,7 +101,7 @@ module.exports = {
 
     new CopyPlugin({
       patterns: [
-        { from: "./src/ui" },
+        { from: "./src/ui", to: "./ui" },
         { from: "./src/assets", to: "./assets" },
       ],
     }),
