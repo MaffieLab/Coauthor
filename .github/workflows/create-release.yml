@@ -1,55 +1,55 @@
 name: Create new release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  check-for-version-bump:
-    name: "Check for version bump"
+  get-release-info:
+    name: "Get release info"
     runs-on: ubuntu-latest
     outputs:
-      version-bump-found: ${{ steps.step1.outputs.VERSION_BUMP_FOUND }}
-      version: ${{ steps.step1.outputs.VERSION }}
+      version: ${{ steps.get-version.outputs.VERSION }}
+      archive-name: ${{ steps.get-archive-name.outputs.ARCHIVE_NAME }}
     steps:
-      - name: Parse commit message for version
-        id: step1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get release version from package.json
+        id: "get-version"
         run: |
-          set +e 
-          COMMIT_MESSAGE_HEADER=$(echo "${{github.event.head_commit.message}}" | head -n 1)
-          match=$(echo $COMMIT_MESSAGE_HEADER | grep -E -o "chore: bump version \([[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\)") 
-          version=$(echo $match | grep -E -o "[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+") 
-          version_bump_found=$(echo $?)
-          echo "VERSION_BUMP_FOUND=$version_bump_found" >> $GITHUB_OUTPUT
+          version=$(node -p "require('./package.json').version")
           echo "VERSION=$version" >> $GITHUB_OUTPUT
+
+      - name: Construct archive name using release version
+        id: "get-archive-name"
+        run: |
+          echo "ARCHIVE_NAME=coauthor-$version" >> $GITHUB_OUTPUT
 
   build-chrome-extension:
     name: Build extension
-    needs: [check-for-version-bump]
-    if: needs.check-for-version-bump.outputs.version-bump-found == '0'
+    needs: [get-release-info]
     uses: ./.github/workflows/build-extension-reusable.yml
     with:
       environment: production
-      archive-name: coauthor-${{needs.check-for-version-bump.outputs.version}}
+      archive-name: ${{needs.get-release-info.outputs.archive-name}}
     secrets: inherit
 
   upload-extension:
     name: Upload extension to chrome web store
-    needs: [build-chrome-extension, check-for-version-bump]
+    needs: [build-chrome-extension, get-release-info]
     runs-on: ubuntu-latest
     steps:
-      # must use this to access previously uploaded artifact
+      # must use this to access artifact created in a different job
       - name: Download bundle artifact
         uses: actions/download-artifact@v4
         with:
-          name: coauthor-${{needs.check-for-version-bump.outputs.version}}
+          name: ${{needs.get-release-info.outputs.archive-name}}
           path: ./build
 
       # download artifact action unzips on download (not configurable) so must zip up again
       - name: Archive build
         run: |
-          zip -r coauthor-${{needs.check-for-version-bump.outputs.version}}.zip build
+          zip -r ${{needs.get-release-info.outputs.archive-name}}.zip build
 
       - name: Install webstore cli
         run: |
@@ -58,7 +58,7 @@ jobs:
       - name: Upload step
         run: |
           chrome-webstore-upload \
-            --source coauthor-${{needs.check-for-version-bump.outputs.version}}.zip \
+            --source ${{needs.get-release-info.outputs.archive-name}}.zip \
             --extension-id ${{ vars.EXTENSION_ID }} \
             --client-id ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_ID }} \
             --client-secret ${{ secrets.CI_GOOGLE_OAUTH_CLIENT_SECRET }} \
@@ -66,7 +66,7 @@ jobs:
 
   push-tag:
     name: Push Tag
-    needs: [check-for-version-bump, upload-extension]
+    needs: [get-release-info, upload-extension]
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -78,8 +78,8 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git tag ${{ needs.check-for-version-bump.outputs.version }}
-          git push origin ${{ needs.check-for-version-bump.outputs.version }}
+          git tag ${{ needs.get-release-info.outputs.version }}
+          git push origin ${{ needs.get-release-info.outputs.version }}
 
   # Intentionally made a draft release instead of a official release
   # because the release shouldn't be finalized and made public
@@ -87,16 +87,29 @@ jobs:
   # and published (It could be rejected after uploading)
   create-draft-release:
     name: Create draft release
-    needs: [push-tag, check-for-version-bump]
+    needs: [push-tag, get-release-info]
     permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: softprops/action-gh-release@v2
+      # must use this to access artifact created in a different job
+      - name: Download bundle artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{needs.get-release-info.outputs.archive-name}}
+          path: ./build
+
+      # download artifact action unzips on download (not configurable) so must zip up again
+      - name: Archive build
+        run: |
+          zip -r ${{needs.get-release-info.outputs.archive-name}}.zip build
+
+      - name: Create release on GitHub
+        uses: softprops/action-gh-release@v2
         with:
           files: |
-            coauthor-${{needs.check-for-version-bump.outputs.version}}.zip
+            ${{needs.get-release-info.outputs.archive-name}}.zip
           draft: true
           generate_release_notes: true
-          tag_name: ${{needs.check-for-version-bump.outputs.version}}
-          name: ${{needs.check-for-version-bump.outputs.version}}
+          tag_name: ${{ needs.get-release-info.outputs.version }}
+          name: ${{ needs.get-release-info.outputs.version }}
