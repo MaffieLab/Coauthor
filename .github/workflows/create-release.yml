@@ -19,11 +19,14 @@ jobs:
         run: |
           version=$(node -p "require('./package.json').version")
           echo "VERSION=$version" >> $GITHUB_OUTPUT
+          echo "VERSION=$version" >> $GITHUB_ENV
 
       - name: Construct archive name using release version
         id: "get-archive-name"
         run: |
-          echo "ARCHIVE_NAME=coauthor-$version" >> $GITHUB_OUTPUT
+          echo "ARCHIVE_NAME=coauthor-$VERSION" >> $GITHUB_OUTPUT
+        env:
+          VERSION: ${{env.VERSION}}
 
   build-chrome-extension:
     name: Build extension
