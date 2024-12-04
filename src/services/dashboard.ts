@@ -48,7 +48,7 @@ const renderLoginInterface = () => {
   });
 
   logButton.addEventListener("mouseout", () => {
-    logButton.style.backgroundColor = "lightgreen";
+    logButton.style.backgroundColor = "green";
   });
 
   loginSection.appendChild(logButton);
