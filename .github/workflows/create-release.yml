@@ -47,12 +47,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{needs.get-release-info.outputs.archive-name}}
-          path: ./build
+          path: "./${{needs.get-release-info.outputs.archive-name}}"
 
       # download artifact action unzips on download (not configurable) so must zip up again
       - name: Archive build
         run: |
-          zip -r ${{needs.get-release-info.outputs.archive-name}}.zip build
+          (cd "./${{needs.get-release-info.outputs.archive-name}}"; zip -r "../${{needs.get-release-info.outputs.archive-name}}.zip" ./)
 
       - name: Install webstore cli
         run: |
@@ -100,12 +100,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{needs.get-release-info.outputs.archive-name}}
-          path: ./build
+          path: "./${{needs.get-release-info.outputs.archive-name}}"
 
       # download artifact action unzips on download (not configurable) so must zip up again
       - name: Archive build
         run: |
-          zip -r ${{needs.get-release-info.outputs.archive-name}}.zip build
+          (cd "./${{needs.get-release-info.outputs.archive-name}}"; zip -r "../${{needs.get-release-info.outputs.archive-name}}.zip" ./)
 
       - name: Create release on GitHub
         uses: softprops/action-gh-release@v2
